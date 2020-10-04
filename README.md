@@ -232,3 +232,12 @@ Ovo je primer nesupervizovanog zadataka koji grupiše instance podatka u klaster
 
 ### Nalaženje anomalija
 
+Ovaj zadatak pravi model za pronalaženje anomalija u ulaznom skupu podataka bazirani na principu *Principal Component Analysis (PCA)*. PCA se često koristi zato što otkriva unutrašnju strukturu podataka i objašnjava varijacije istih. Analizira ulazne podatke, traži korelacije izmedju njih i teži u nalaženju kombinacija podataka koje najbolje opisuju razlike u mogućim izlazima. Slično kao u algoritmima klasifikacije, postoji rezultat `PredictedLabel` koji opisuje da li je ulazna vrednost anomalija ili ne.
+
+### Rangiranje
+
+Zadatak rangiranja formira takozvani *ranker* na osnovu ulaznog skupa podataka. Ulazni set podataka treba da sadrži podatke rangirane po nekom kritetijumu - labele rangova su najčešće celi brojevi. Ranker je treniran tako da može da zaljuči rang novih podataka na osnovu prethodnih.
+
+### Recommender sistemi
+
+Zadatak koji pr ML.NET uses Matrix factorization (MF), a collaborative filtering algorithm for recommendations when you have historical product rating data in your catalog. For example, you have historical movie rating data for your users and want to recommend other movies they are likely to watch next.

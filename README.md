@@ -87,7 +87,7 @@ Model i generisani C# kod mogu se direktno koristiti u .NET okruženju i framewo
 
 Kao što je prethodno pomenuto, poslednih 20% dataset-a koristiće se za evaluaciju modela. U slučaju modela za klasifikaciju svi parametri koji ga opisuju poput mirko/makro preciznosti to i opisuju.
 
-## ML.NET osnovna arhitektura aplikacija
+## ML.NET i osnovni arhitekturni principi
 
 Aplikativna struktura se svodi na iterativni proces razvoja modela koji se sastoji iz više koraka:
 
@@ -124,8 +124,42 @@ static void Main(string[] args)
            var size = new InputData() { ... };
            var labelAttribute = mlContext.Model.CreatePredictionEngine<InputData, Prediction>(model).Predict(size);
 
-           // label Attribute promenljiva sadrži predikciju na osnovu feature atributa
+           // labelAttribute promenljiva sadrži predikciju na osnovu feature atributa
        }
 ```
 
 U ovom pokaznom kodu može se videti najosnovniji primer učitavnja podataka, definisanja pipeline-a, treniranja i naravno korišćenja predikcija.
+
+### Model, pripremanje podataka i evaluacija
+
+U osnovi, generisani model je objekat koji sadrži **transformacije** koje se primenjuju na ulaznim podacima kako bi se **došlo do predikcija**.  Na primeru klasifikacije, kompleksan model bi ulaznu deskripciju razbio na skup feature atributa, uklonio suvišne reči i zatim prebrojio reči u tekstu. Nakon kombinovanja i normalizacije, model bi izvršio multiplikaciju i preveo nadjene reči u težinski presek. Na osnovu ovako generisanog težinskog preseka se vrši preraspodela i dodeljivanje kategoriji - na osnovu prethodnih poklapanja. Postoji više tipova modela poput **linearnih**, **decision tree modela** ili **generalizovanih aditivnih modela**. O ovome će više reči biti kasnije.
+
+**Pripremanje podataka** je potrebno kada su podaci dostupni aplikaciji u obliku koji nije pogodan za mašinsko učenje. Pre nego što je moguće koristiti podatke kako bi se vadili potrebni parametri modelu, neophodno je sirove podatke pre-procesirati. Više pristupa poput promene formata, normalizacije, proširivanja dimenzija ili pak uklanjanja redudanse su ovde primenljivi. U zavisnosti od scenarija i problema koji se rešava treba drugačije pristupiti ovom koraku. Sve u svemu, potrebno je modelu dostaviti podatke u njemu odgovarajućem i obradivom obliku - ovo ćesto nije slučaj sa *sirovim podacima* i potrebno ih je obraditi.
+
+**Evaluacija modela** se svodi, kao što je već pomenuto, na posmatranja opsinih atributa modela koji se dobijaju prilikom korišćenja novih podataka (podataka koji prethodno nisu bili poznati modelu). Svaki tip zadataka mašinskig učenja ima odredjene metrike koje se koriste za evaluaciju preciznosti modela u procesu generisanja predikcija. 
+
+```cs
+InputData[] testInputData =
+        {
+            new InputData() { ... },
+            new InputData() { ... },
+            new InputData() { ... },
+            new InputData() { ... }
+        };
+
+        var testInputDataView = mlContext.Data.LoadFromEnumerable(testInputData);
+        var testLabelDataView = model.Transform(testInputDataView);
+
+        var metrics = mlContext.Regression.Evaluate(testLabelDataView, labelColumnName: /* label atribut */);
+```
+
+U ovom pokaznom kodu može se videti kako se evaluira regresivni zadatak nad novim test dataset-om. Što je greška manja - postoji bolja korelacija izmedju predvidjenog izlaza i očekivanog.
+
+### ML.NET arhitektura
+
+Svaka ML.NET aplikacija polazi od jednog `MLContext` objekta - singleton objekta koji sadrži kataloge. Katalog je fabrika iliti *factory* za učitavanje i čuvanje podataka, transformacije, treniranje i komponente operacija. 
+* `DataOperationsCatalog` se koristi za učitavanje i snimanje podataka.
+* `TransformsCatalog` se koristi za pripremanje podataka.
+* `MulticlassClassificationCatalog` za više-klasnu klasifikaciju, postoji još mnogo kataloga za dodatne scenarije..
+** `AnomalyDetectionCatalog`, `RegressionCatalog` i drugi.
+* `ModelOperationsCatalog` za korišćenje modela.

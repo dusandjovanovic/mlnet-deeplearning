@@ -99,7 +99,7 @@ Aplikativna struktura se svodi na iterativni proces razvoja modela koji se sasto
 * Učitavanje modela nazad u `ITransformer` objekat
 * Formiranje predikcija pozivom `CreatePredictionEngine.Predict()`
 
-```charp
+```cs
 static void Main(string[] args)
        {
            MLContext mlContext = new MLContext();

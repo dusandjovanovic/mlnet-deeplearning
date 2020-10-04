@@ -8,6 +8,16 @@ Centralni koncept ML.NET-a je **model mašinskog učenja**. Ovaj model predstavl
 
 Kao što je već navedeno, ovaj framework je kros-platformski i može se izvršavati na Windows-u, Linux-u i macOS-u oslanjajući se na .NET Core okruženje, ili pak samo Windows-u preko .NET orkuženja.
 
+Evo i nekoliko primera predikcija:
+
+|||
+|-|-|
+|Klasifikacija/kategorizacija|Podela feedback podataka u pozitivne i negativne kategorije|
+|Regresija/Predikcija kontinualnih vrednosti|Predikcija cene nekretnina na osnovu lokacije|
+|Detekcija anomalija|Detekcija nevalidnih bankovnih transakcija|
+|Preporuke|Davanje preporuka korisnicima web platformi na osnovu njihovi prethodnih aktivnosti|
+|**Klasifikacija slika**|Kategorizacija patologija u medicinskim izvorima slika|
+
 ## Model builder
 
 **ML.NET Model Builder** je ekstenzija koja se koristi za gradjenje, treniranje i *deployment* modela mašinskog učenja. Oslanja se na koncept automatizovanog mašinskog učenja - *Automated machine learning (AutoML)* za istraživanje različitih algoritama i nalaženje optimalnog rešenja. Model Builder se u ovom obliku može koristiti na osnovu dataset-a i problema koji rešava i za rezultat daje generisani model.
@@ -76,3 +86,46 @@ Model i generisani C# kod mogu se direktno koristiti u .NET okruženju i framewo
 ![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/automate-training-with-cli/cli-multiclass-classification-metrics.png "CLI metrics")
 
 Kao što je prethodno pomenuto, poslednih 20% dataset-a koristiće se za evaluaciju modela. U slučaju modela za klasifikaciju svi parametri koji ga opisuju poput mirko/makro preciznosti to i opisuju.
+
+## ML.NET osnovna arhitektura aplikacija
+
+Aplikativna struktura se svodi na iterativni proces razvoja modela koji se sastoji iz više koraka:
+
+* Skupljanje i učitavanje podataka `IDataView` objekat
+* Specifikacija `pipleine-a` operacija ekstrakcije podatka (feature atributa) i aplikacije algoritama mašinskog učenja
+* Treniranje modela pozivom metode `Fit()` nad pipeline-om
+* Evaluacije modela i poboljšanja kroz više iteracija
+* Čuvanje modela u binarnom formatu
+* Učitavanje modela nazad u `ITransformer` objekat
+* Formiranje predikcija pozivom `CreatePredictionEngine.Predict()`
+
+```charp
+static void Main(string[] args)
+       {
+           MLContext mlContext = new MLContext();
+
+           // 1. Ulazni podaci
+           InputData[] inputData = {
+               new InputData() { ... },
+               new InputData() { ... },
+               new InputData() { ... },
+               new InputData() { ... } };
+               
+           IDataView trainingData = mlContext.Data.LoadFromEnumerable(inputData);
+
+           // 2. Specifikacija pipeline-a
+           var pipeline = mlContext.Transforms.Concatenate("Features", new[] { /* feature atributi ulaznih podataka */  })
+               .Append(mlContext.Regression.Trainers.Sdca(labelColumnName: /* label atribut za predikciju */, maximumNumberOfIterations: 100));
+
+           // 3. Treniranje
+           var model = pipeline.Fit(trainingData);
+
+           // 4. Predikcija na osnovu modela
+           var size = new InputData() { ... };
+           var labelAttribute = mlContext.Model.CreatePredictionEngine<InputData, Prediction>(model).Predict(size);
+
+           // label Attribute promenljiva sadrži predikciju na osnovu feature atributa
+       }
+```
+
+U ovom pokaznom kodu može se videti najosnovniji primer učitavnja podataka, definisanja pipeline-a, treniranja i naravno korišćenja predikcija.

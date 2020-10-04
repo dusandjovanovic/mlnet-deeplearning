@@ -202,3 +202,33 @@ Svaki algoritam traži ulaznu kolonu koja je vektor - po konvenciji nazvana *Fea
 ```
 
 Svi algoritmi takodje formiraju nove kolone nakon što završe sa obradom podataka u svom mestu pipeline-a i daju predikciju. U slučaju regresije, na primer, to će biti kolona *score*. Bitna stavka `DataView` objekata je što se izvršavaju "lenje" - oni se učitavaju i evaluiraju jedino u procesu treniranja i evaluacije, kao i predikcije.
+
+## Zadaci mašinskog učenja u ML.NET-u
+
+Zadatak u ML.NET-u je **tip predikcije ili zaključivanja**, koji se zasniva na problemu ili nekom pitanju i podacima. Na primer, zadatak klasifikacije dodeljuje kategoriju dostupnim ulaznim podacima. Ovi zadaci se oslanjaju na šablone u podacima i nisu eksplicitno programirani unapred.
+
+Postoje **supervizovani i nesupervizovani zadaci**. Supervizovani se koriste za predikciju labela do tada nevidjenih podataka. Nesupervizovani, sa druge strane, nalaze strukturu i strukturne zavisnosti u podacima i često se koriste za nalaženje pod-grupa ulaznih podataka.
+
+### Binarna klasifikacija
+
+Za najbolje rezultate potrebno je da ulazni podaci budu balansirani po kategorijama. Vrednosti koje nedostaju treba da se odstrane pre treniranja a kolona ulaznog atributa labele mora biti *boolean* tipa. Rezultat je `PredictedLabel` vrednost koja je bazirana na *score-u* dobijenog na osnovu algoritama. Postoji mnogo algoritama za ovu klasifikaciju a neki od primera su `FastForestBinaryTrainer`, `GamBinaryTrainer` i `FieldAwareFactorizationMachineTrainer`.
+
+Evo i kratkog objašnjena prvog algoritma:
+
+> Decision trees are non-parametric models that perform a sequence of simple tests on inputs. This decision procedure maps them to outputs found in the training dataset whose inputs were similar to the instance being processed. A decision is made at each node of the binary tree data structure based on a measure of similarity that maps each instance recursively through the branches of the tree until the appropriate leaf node is reached and the output decision returned.
+
+### Više-klasna klasifikacija
+
+Ovo je tip supervizovanog zadatka koji predvidja klasu ulaznih podataka, slično kao i prethodni s tim što postoji više klasa. Izlaz ovog algoritma je takozvani *classifier* koji se koristi za predvidjanje klasa - na osnovu polaznog dataset-a za treniranje. Ovakav model može se trenirati preko više algoritama poput `LightGbmMulticlassTrainer`
+, `SdcaMaximumEntropyMulticlassTrainer` ili `SdcaNonCalibratedMulticlassTrainer`.
+
+### Regresija
+
+Još jedan supervizovan zadatak koji se koristi za predvidjanje vrednosti labele na osnovu skupa srodnih atributa. Labela može biti bilo koje kontinualne vrednosti i nije iz ograničenog skupa vrednosti. Algoritmi regresije mdeluju odnose labele prema njenim srodnim atributima i donose zaključke kako će se menjati sa promenom ovih posmatranih vrednosti. Ulazni skup je sačinjen od poznatih labela i njehovi ustanovljenih vrednosti. Izlaz je funckija koja može da se koristi za predikciju vrednosti na osnovu bilo kog skupa atributa.
+
+### Klasterovanje
+
+Ovo je primer nesupervizovanog zadataka koji grupiše instance podatka u klastere koji sadrže slične vrednosti. Klasteri se mogu koristiti za izvlačenje zavisnosti koje se ne primećuju običnim obilascima svih ulaznih podataka. Ulazni/izlazni skupovi zavise od izabrane metodologije grupisanja. Više pristupa poput distribucije ili povezanosti mogu biti iskorišćeni.
+
+### Nalaženje anomalija
+

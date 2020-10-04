@@ -277,3 +277,18 @@ Formiraju model koji poseduje više odluka poput *flow chart-a*. Nije neophodna 
 | Fast tree      | Dobar u slučaju obrade slika      |
 | Fast forest | Dobar u slučaju podataka sa šumovima     |
 | Generalized additive model (GAM) | Dobar izbor u slučaju problema koji se lako rešavaju stablima     |
+
+Ovo su dva najznačajnija i najčešće korišćenija tipa algoritama. Postoje i drugi koji neće biti navedeni.
+
+### Metrike algoritama i evaluacija
+
+Svaki od algoritama generiše zasebni model koji je po suštini i strukturi poseban. Evaluacija ovako generisanih modela je različita od tipa modela i specifična je za zadatak mašinskog učenja koji se izvršava. Na primer, u slučaju klasifikacije, validacija se dobija procenom koliko dobro se predvidjena klasa poklapa sa stvarnom. U slučaju klasterovanja, sa drug strane, evaluacija uzima u obzir koliko su blizu klasterovane pod-grupe.
+
+Prema tome, za svaki tip zadataka/algoritama postoje posebne metrike koje se koriste u procesu evaluacije. **Evaluacija** se može posmatrati itertivno i model se može poboljšavati kroz više koraka ali je neophodno **posmatrati specifične metrike po tipu modela**.
+
+Neki od načina poboljšanja modela:
+* Promena strukture problema, postavljanje novih pitanja
+* Pribavljanje dodatnih primeraka podataka
+* Dodavanje konteksta podacima
+* Korišćenje smislenih podataka
+* Cross-validacija (podela dataseta i primena različitih algoritama nad grupama podataka) ili pak izbor drugog algoritma

@@ -163,3 +163,42 @@ Svaka ML.NET aplikacija polazi od jednog `MLContext` objekta - singleton objekta
 * `MulticlassClassificationCatalog` za više-klasnu klasifikaciju, postoji još mnogo kataloga za dodatne scenarije..
 ** `AnomalyDetectionCatalog`, `RegressionCatalog` i drugi.
 * `ModelOperationsCatalog` za korišćenje modela.
+
+#### Izgradjivanje pipeline-a
+
+```cs
+    var pipeline = mlContext.Transforms.Concatenate("Features", new[] { /* feature atribut(i) */ })
+        .Append(mlContext.Regression.Trainers.Sdca(labelColumnName: /* label atribut */, maximumNumberOfIterations: 100));
+```
+
+Svaki od kataloga za različite scenarije sadrži više proširenih metoda. Iz primera se može videti da su `Concatenate` i `Sdca` ovakve metode. Svaka od kataloških metoda pridodaje `IEstimator` objekat pipeline-u. **`Estimator` objekat** je netrenirani transformator i potrebno ga je "uklopiti" sa podacima da bi se dobio pravi transformator. **Procesom treniranja** i pozivom metode `Fit()` dobija se kao rezultat **transformator** koji se kasnije koristi za predikcije.
+
+```cs
+    var model = pipeline.Fit(trainingData);
+    
+    ...
+    
+    IDataView predictions = model.Transform(inputData);
+```
+
+Nakon što se dodaju potreni objekti pipeline-u vrši se testiranje modela. Pozivom metode `Fit()` koriste se ulazni podaci za testiranje kako bi se došlo do parametara modela. Rezultujući model implementira `ITransformer` interfejs - u ovom obliku je u mogućnosti da **transformiše ulazne podatke u predikcije**.
+
+### Predikcije modela, data modeli i scheme
+
+Ulazni podaci se mogu transformisati u predikcije po principu više od jednom iliti *bulk* ili jedan po jedan. `CreatePredictionEngine()` metoda uzima ulaznu i izlaznu klasu. Imena atributa odredjuju imena kolona podataka koja se koriste u procesu treniranja i predikcije.
+
+```cs
+    var size = new InputData() { Size = 2.5F };
+    var predEngine = mlContext.CreatePredictionEngine<InputData, Prediction>(model);
+    var featureAttr = predEngine.Predict(size);
+```
+
+U jezgru ML.NET-a pipeline-a za mašinsko učenje stoje `DataView` objekti. Svaka transformacija pipeline-a poseduje `input schemu` (imena podataka, veličine i tipovi očekivani na ulazu transformatora) i `output schemu` (isto ali koje se dobija na izlazu transformatora). Svaki od ovih objekata poseduje kolone i redove gde svaka kolona ima jedinstveno ime i njoj prispojen tip podataka.
+
+Svaki algoritam traži ulaznu kolonu koja je vektor - po konvenciji nazvana *Features* jer opisuje takozvane feature atribute. U kodu ispod će, na primer, kolona `Xyz` biti ovako tretirana.
+
+```cs
+   var pipeline = mlContext.Transforms.Concatenate("Features", new[] { "Xyz" })
+```
+
+Svi algoritmi takodje formiraju nove kolone nakon što završe sa obradom podataka u svom mestu pipeline-a i daju predikciju. U slučaju regresije, na primer, to će biti kolona *score*. Bitna stavka `DataView` objekata je što se izvršavaju "lenje" - oni se učitavaju i evaluiraju jedino u procesu treniranja i evaluacije, kao i predikcije.

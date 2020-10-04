@@ -249,10 +249,31 @@ Za svaki od prethodno opisanih zadataka postoji mnoštvo algoritama koji se mogu
 Algoritmi se baziraju na takozvanim ***feature-ima*** a ovo su numeričke vrednosti dobijene od ulaznih podataka. 
 
 Feature vrednosti se dobijaju jednim od dostupnih **transformacija ulaznih podataka**.
-* Pripremanje ulaznih podataka za mašinsko učenje zahteva ove transformacije.
-** Svaka transformacija očekuje i proizvodi podatke u odredjenom obliku, koji se navode u ulančanoj specifikaciji:
-*** Mapiranje i grupisanje kolona
-*** Normalizacija i skaliranje
-*** Konverzije izmedju tipova
-*** Transformacije teksta/slika poput **izvlačenja piksela**
-*** **Transformacije deep learning modela** poput `LoadTensorFlowModel` i druge..
+* Pripremanje ulaznih podataka za mašinsko učenje zahteva ove transformacije. Svaka transformacija očekuje i proizvodi podatke u odredjenom obliku, koji se navode u ulančanoj specifikaciji:
+1. Mapiranje i grupisanje kolona
+2. Normalizacija i skaliranje
+3. Konverzije izmedju tipova
+4. Transformacije teksta/slika poput **izvlačenja piksela**
+5. **Transformacije deep learning modela** poput `LoadTensorFlowModel` i druge..
+
+Algoritam se svodi na matematiku koja se primenjuje kako bi se napravio model. Različiti modeli formiraju modele različitih karakteristika. U ML.NET-u isti algoritam može da se primeni na više različitih zadataka ali će izlaz biti drugačiji. Za svaku kombinaciju postoji komponenta koja izvršava algoritam i interpretaciju. Na primer, `SdcaRegressionTrainer` koristi `StochasticDualCoordinatedAscent` algoritam primenjen na `Regression` zadatak.
+
+**Linearni algoritmi** daju modele koji računaju *score* na osnovu linearne kombinacije ulaznih podataka i **skupa težina**. Upravo skup težina se formira u procesu treniranja modela. Pre treniranja neophodna je normalizacija. Ovi algoritmi prolaze više puta kroz trening dataset-ove i formiraju model.
+
+| Algoritam      | 	Osobine          |
+| ------------- |:-------------:|
+| Averaged perceptron     | Najbolji za klasifikaciju teksta |
+| Stochastic dual coordinated ascent      | Dobre performanse bez podešavanja      |
+| L-BFGS | Dobar u slučaju velikog broja faeture-a     |
+| Symbolic stochastic gradient descent | Najbrži algoritam za binarnu klasifikaciju     |
+
+**Decision tree algoritmi**
+
+Formiraju model koji poseduje više odluka poput *flow chart-a*. Nije neophodna normalizacija, niti linearna separacija feature-a. Ovi algoritmi zahtevaju više resursa i nisu skalabilni poput linearnih. Dobro se pokazuju nad dataset-ovima koji mogu da stanu u radnu memoriju. 
+
+| Algoritam      | 	Osobine          |
+| ------------- |:-------------:|
+| Light gradient boosted machine     | Najbolji za binarnu klasifikaciju |
+| Fast tree      | Dobar u slučaju obrade slika      |
+| Fast forest | Dobar u slučaju podataka sa šumovima     |
+| Generalized additive model (GAM) | Dobar izbor u slučaju problema koji se lako rešavaju stablima     |

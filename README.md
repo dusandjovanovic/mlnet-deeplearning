@@ -241,3 +241,18 @@ Zadatak rangiranja formira takozvani *ranker* na osnovu ulaznog skupa podataka. 
 ### Recommender sistemi
 
 Zadatak koji preporučuje listu objekata na osnovu ulaznih parametara subjekta. ML.NET koristi proces poznat kao *Matrix factorization (MF)*, kolaborativni filtering algoritam za preporuke kada postoje istorijski podaci na osnovu kojih se može koristiti.
+
+### Izbor algoritama?
+
+Za svaki od prethodno opisanih zadataka postoji mnoštvo algoritama koji se mogu izabrati. Izbor itekako zavisi od problema za koji je potrebno dobiti predikcije, karakteristika ulaznih podataka i naravno hardvera. Kako je treniranje modela itertivan proces očekuje se isprobavanje više algoritama.
+
+Algoritmi se baziraju na takozvanim ***feature-ima*** a ovo su numeričke vrednosti dobijene od ulaznih podataka. 
+
+Feature vrednosti se dobijaju jednim od dostupnih **transformacija ulaznih podataka**.
+* Pripremanje ulaznih podataka za mašinsko učenje zahteva ove transformacije.
+** Svaka transformacija očekuje i proizvodi podatke u odredjenom obliku, koji se navode u ulančanoj specifikaciji:
+*** Mapiranje i grupisanje kolona
+*** Normalizacija i skaliranje
+*** Konverzije izmedju tipova
+*** Transformacije teksta/slika poput **izvlačenja piksela**
+*** **Transformacije deep learning modela** poput `LoadTensorFlowModel` i druge..

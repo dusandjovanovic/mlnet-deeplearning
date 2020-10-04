@@ -24,3 +24,36 @@ Nakon što se odabere scenario potrebno je dotaviti dataset u jednom od podržan
 ### Izbor izlaza za predikciju
 
 Dataset se može posmatrati kao tabela redova koji su primerci za testiranje - gde svaki od redova ima više atributa po kolonama. Svaki red ima **labelu** kao atribut koji treba predvideti i ostale **fature atribute**. Ovi preostali atributi koriste se za predikciju labele. Evo jednog [primera dataset-a](https://raw.githubusercontent.com/dotnet/machinelearning-samples/master/datasets/taxi-fare-train.csv) nad kojim se može ovo opisati. Ovo je primer podataka za predikciju cena taxi prevoza, feature atributi su trajanje vožnje taxijem i njena dužina.
+
+### Treniranje modela
+
+Treniranje je dugotrajan proces u kome se novi model koji se gradi uči kako da odgovara na pitanja - pitanja bazirana na scenariju nad kojim je gradjen. Nakon završenog treniranja model može da odgovara na pitanja i daje predikcije na osnovu do tada nevidjenih podataka. *AutoML* tehnologija koja se koristi istražuje više različitih modela kako bi našla onaj koji se najbolje pokazuje. Duže vreme treniranja dozvoljava bolje definisanje modela. 
+
+| Veličina dataset-a        | 	Prosečno vreme treniranja          |
+| ------------- |:-------------:|
+| 0 - 10 MB      | 10 sekundi |
+| 10 - 100 MB      | 10 minuta      |
+| 100 - 500 MB | 30 minuta      |
+| 500 - 1 GB | 60 minuta      |
+| 1 GB+ | 180+ minuta      |
+
+U tabeli su data okvirna vremena potrebna za treniranje modela. Medjutim, ovo dosta zavisi od tipa problema, broja feature atributa i naravno hardvera na kome se izvršava.
+
+### Evaluacija modela
+
+Evaluacija je proces procene kojim se ustanovljava koliko je dobar model. Model builder koristi izgradjeni model kako bi generisao predikcije na osnovu novih dataset-ova i samim tim mogu se doneti zaključci koliko su te predikcije precizne. Početni dataset se deli po razmeri 80-20 na podatke za treniranje i podatke za evaluaciju - gde se 20% podataka nakon treniranja koristi za evaluaciju generisanog modela.
+
+Evaluacija na primeru klasifikacije sa više kategorija - osnovna metrika za evaluaciju je mikro-preciznost koja generalno opisuje koliko se puta dolazeća stavka ispravno klasifikovala. Śto je ova vrednost bliže jedinici predikcija je bolje evaulirana. Alternativa je makro-preciznost koja opisuje, za odredjenu kategoriju, koliko puta je bila dolazeća stavka ispravna.
+
+Postoji više mogućnosti za poboljšanje nedovoljno dobrog modela poput dužeg vremena treniranja, proširavanja dataset-a ili pak balansiranja izvornih podataka. Poslednji pristup je posebno važan u slučaju rešavanja problema klasifikacije gde je važno da je broj stavki izbalansiran po kategorijama.
+
+## ML.NET CLI
+
+**ML.NET Command-line Interface** je alat koji se koristi za generisanje modela. Potrebno je dostaviti dataset podataka i problem mašinskog učenja koji treba rešiti. Ovako generisani model je serijalizovan i dodatni C# kod potreban za njegovo korišćenje je generisan.
+
+Primer generisanja modela za klasifikaciju na osnovu dataset-a koji sadrži podatke sa servisa yelp.
+
+`mlnet classification --dataset "yelp_labelled.txt" --label-col 1 --has-header false --train-time 10`
+
+![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/automate-training-with-cli/mlnet-classification-powershell.gif "CLI")
+

@@ -240,4 +240,4 @@ Zadatak rangiranja formira takozvani *ranker* na osnovu ulaznog skupa podataka. 
 
 ### Recommender sistemi
 
-Zadatak koji pr ML.NET uses Matrix factorization (MF), a collaborative filtering algorithm for recommendations when you have historical product rating data in your catalog. For example, you have historical movie rating data for your users and want to recommend other movies they are likely to watch next.
+Zadatak koji preporučuje listu objekata na osnovu ulaznih parametara subjekta. ML.NET koristi proces poznat kao *Matrix factorization (MF)*, kolaborativni filtering algoritam za preporuke kada postoje istorijski podaci na osnovu kojih se može koristiti.

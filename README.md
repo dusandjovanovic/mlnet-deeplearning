@@ -2,6 +2,12 @@
 
 **ML.NET** je kros-platformski *framework* za mašinsko učenje namenjen da bude korišćen u **.NET** okruženju. Neke od osnovnih mogućnosti su integracija modela mašinskog učenja u postojeće .NET sisteme, kros-platformski CLI i slično.
 
+Ovaj framework proširava .NET sisteme mogućnostima mašinskog učenja, bez obzira da li se radi o online ili offline scenarijima. Na osnovu ovoga, mogu se praviti automatizovane predikcije na osnovnu podataka koji su dostupni aplikaciji. Aplikacije mašinskog učenja koriste šablone podataka kako bi pravile **predikcije** - nasuprot tome da budu programiranje unapred.
+
+Centralni koncept ML.NET-a je **model mašinskog učenja**. Ovaj model predstavlja korake koje je potrebno primeniti kako bi se ulazni skup podataka transformisao u predikciju. Moguće je **istrenirati sopstveni model** ili **importovati postojeći** koji se rezultat neke druge tehnologije poput *TensorFlow-a*. Nakon što je model dostupan može se dodati aplikaciji koja će ga koristiti za predikcije.
+
+Kao što je već navedeno, ovaj framework je kros-platformski i može se izvršavati na Windows-u, Linux-u i macOS-u oslanjajući se na .NET Core okruženje, ili pak samo Windows-u preko .NET orkuženja.
+
 ## Model builder
 
 **ML.NET Model Builder** je ekstenzija koja se koristi za gradjenje, treniranje i *deployment* modela mašinskog učenja. Oslanja se na koncept automatizovanog mašinskog učenja - *Automated machine learning (AutoML)* za istraživanje različitih algoritama i nalaženje optimalnog rešenja. Model Builder se u ovom obliku može koristiti na osnovu dataset-a i problema koji rešava i za rezultat daje generisani model.
@@ -57,3 +63,16 @@ Primer generisanja modela za klasifikaciju na osnovu dataset-a koji sadrži poda
 
 ![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/automate-training-with-cli/mlnet-classification-powershell.gif "CLI")
 
+Izlaz koji se dobija sadrži više stavki:
+
+* Serijalizovani `.zip` modela koji može da se koristi
+* C# kod:
+** C# kod za pokretanje/ocenjivanje modela u .NET okruženju
+** C# kod sa kodom koji se koristio za treniranje modela
+* Log fajl koji sadrži korisne informacije u procesu izgradnje modela.
+
+Model i generisani C# kod mogu se direktno koristiti u .NET okruženju i framework-u poput ASP.NET Core bez obzira da li se radi o web ili desktop aplikacijama. Na osnovu loga se može vršiti ručno testiranje ili ispitivanje koji su algoritmi izabrani u procesu treniranja modela.
+
+![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/automate-training-with-cli/cli-multiclass-classification-metrics.png "CLI metrics")
+
+Kao što je prethodno pomenuto, poslednih 20% dataset-a koristiće se za evaluaciju modela. U slučaju modela za klasifikaciju svi parametri koji ga opisuju poput mirko/makro preciznosti to i opisuju.

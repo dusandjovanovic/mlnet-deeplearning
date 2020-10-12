@@ -1,5 +1,9 @@
 # ML.NET
 
+### Duboko učenje
+
+**Duboko učenje** je podskup mašinskog učenja. Da bi se trenirali modeli dubokog učenja potrebne su velike količine podataka. Šabloni u podacima se predstavljaju velikim brojem slojeva. Odnosi izmedju podataka se kodiraju u vidu veza izmedju čvorova slojeva različitih težina. Što je jača veza jača je i težina. Kolektivno ovi entiteti i slojevi čine veštačke neuronske mreže - što više ima ovakvih slojeva mreža je dublja i odatle naziv *duboko učenje*.
+
 **ML.NET** je kros-platformski *framework* za mašinsko učenje namenjen da bude korišćen u **.NET** okruženju. Neke od osnovnih mogućnosti su integracija modela mašinskog učenja u postojeće .NET sisteme, kros-platformski CLI i slično.
 
 Ovaj framework proširava .NET sisteme mogućnostima mašinskog učenja, bez obzira da li se radi o online ili offline scenarijima. Na osnovu ovoga, mogu se praviti automatizovane predikcije na osnovnu podataka koji su dostupni aplikaciji. Aplikacije mašinskog učenja koriste šablone podataka kako bi pravile **predikcije** - nasuprot tome da budu programiranje unapred.
@@ -295,7 +299,7 @@ Neki od načina poboljšanja modela:
 
 # Implementacija - Transfer learning i klasifikacija slika
 
-
+Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna. 
 
 Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 
@@ -307,10 +311,11 @@ Polazni model (101-slojna varijanta Rezidualnog mrežnog (ResNet) v2 modela) kat
 
 Novi model će biti u stanju da kategorizuje sliku u dve nove kategorije - **sa pukotinom** i slika **bez pokotine**. Dataset koji se koristi za dodatno testiranje sadrži slike podeljenje u dva direktorijuma, u jednom su napukle a u drugom ostale.
 
-`ImageData` klasa se koristi da opiše šemu ulaznih podataka. `ModelInput` klasa se koristi za ulazne podatke kojima se hrani model i treba da sadrže **byte-reprezentaciju slika**. `ModelOutput` klasa sadrži izlaz iz modela uključujući i **predikciju klase**.
+Klasa `ImageData` koristi se da opiše šemu ulaznih podataka. 
 
-Klasa `Classification` sadrž
-`ImageData` klasa se koristi da opiše šemu ulaznih podataka. `ModelInput` klasa se koristi za ulazne podatke kojima se hrani model i treba da sadrže **byte-reprezentaciju slika**. `ModelOutput` klasa sadrži izlaz iz modela uključujući i **predikciju klase**.
+Klasa `ModelInput` koristi se za ulazne podatke kojima se hrani model i treba da sadrže **byte-reprezentaciju slika**. 
+
+Klasa `ModelOutput` sadrži izlaz iz modela uključujući i **predikciju klase**.
 
 Klasa `Classification` sadrži sve važne metode za treniranje modela i kasniju predikciju. Treba pre svega napraviti *chain* transformacija gde će se labela konvertovati u numeričku vrednost a zatim i primeniti transformacija `LoadRawImageBytes`. Pozivom metoda `Fit` i `Transform` dobija se uskladjeni skup podataka od dataseta za treniranje. Za treniranje su potrebna dva pod-seta - jedan za treniranje i drugi za validaciju koji se dobijaju po odnosu 70/30.
 
@@ -343,5 +348,103 @@ Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasi
 
 # Implementacija - Detekcija objekata
 
-Detekcija objekata primenjuje klasifikaciju slika na granularniji način tako što locira a zatim i kategoriše entitete (objekte) na slikama.
+Detekcija objekata primenjuje klasifikaciju slika na granularniji način tako što locira a zatim i kategoriše entitete (objekte) na slikama. Detekcija objekata je problem koji se rešava CNN mrežama. Model koji se koristio u ovu svru je **Tiny YOLOv2 model**. Ovaj model je treniran i sastoji se od 15 slojeva koji mogu da predvide 20 različitih klasa objekata. Strukture podataka koje opisuju ulaze/izlaze ovog modela nazivaju se *tenzori*. Mogu se posmatrati kao kontejneri koji čuvaju podatke u N-dimenzija. Ulazni sloj ovog modela zove se `image` i očekuje tenzor dimenzija `3 x 416 x 416` dok je izlazni sloj nazvan `grid` i generiše tenzor dimenzija `125 x 13 x 13`.
 
+Ovaj model dakle uzima sliku u obliku `3(RGB) x 416px x 416px`. Slojevi razbijaju i procesiraju sliku da bi se na kraju dobio izlaz u obliku `13 x 13` grid-a gde se svaka ćelija u gridu sastoji od 125 vrednosti.
+
+*The Open Neural Network Exchange (ONNX)* je open-source format modela što dozvoljava treniranje pod jednim okvirom i konzumiranje pod drugim. Model koji se koristi je upravo u ONNX formatu, tačnije serijalizovani oblik slojeva i naučenih šablona. *ImageAnalytics* paket ML.NET-a sadrži pomagala kojima sa slika svodi na numeričke vrednosti koje se zatim koriste u pipeline-ovima.
+
+Klasa `ImageNetData` je ulazna klasa podataka, važno je da sadrži labelu svakog podatka kao i apsolutne putanje svih onih podataka koji se obradjuju.
+
+Klasa `ImageNetPrediction` je klasa za predikcije i ima niz numeričkih vrednosti koji sadrži dimenizje, score objekata kao i verovatnoće klasa za svaki *bounding box* detektovan na slici.
+
+Neophodna je parser klasa za post-procesiranje izlaza modela. Model segmentira sliku na `13 x 13` grid gde je svaka grid ćelija veličine `32px x 32px`. Svaka ćelija ima 5 mogućih bounding box objekata gde se svaki od njih sastoji od 25 elemenata (x, y, w, h, o i p1-p20 verovatnoća za svaku klasu). Izlaz modela je niz dużine 21125 koji opisuje tenzor dimenzija `125 x 13 x 13`. Potrebno je svesti ovaj niz na oblik tenzora.
+
+Klasa `DimensionsBase` sadrži x, y, visinu i širinu objekta koji opisuje.
+
+Klasa `BoundingBoxDimensions` je nasledjuje i služi za opis osobina bounding box-a.
+
+Klasa `BoundingBox` sadrži dimenzije bounding box-a u obliku prethodno pomenute klase, labelu koja opisuje klasu objekta, confidence atribut koji govori o sigurnosti predikcije kao i pravougaonu reprezentaciju box-a i njegovu boju (jer svaka klasa ima jedinstvenu boju).
+
+Klasa `OutputParser` treba da obezbedi prethodno naznačeno parsovanje izlaza modela. Kao što je već napomenuto - `13 x 13 grid :: 32px x 32px` gde svaka ćelija uokviru sebe ima 5 bounding box-va koji sadrže po 25(5+20) feature atributa. Prema tome, svaka ćelija ima 125 informacija.
+
+Ova klasa definiše temena bounding box-ova u vidu odnosa visina/širina. Prilikom proračuna traži se pomeraj od podrazumevanih vrednosti. Takodje treba definisati koje će klase model da predvidi kao i boje uparene sa svakom od klasa. Neke od važnih pomoćnih funkcija su `GetOffset` za mapiranje elemenata id jednodimenzionalnog izlaza na poziciju u tenzoru. `ExtractBoundingBoxes` za izvlačenje dimenzija box-ova na osnovu prethodne metode. `GetConfidence` za izvlačenje confidence vrednosti. `ExtractClasses` za izvlačenje klasnih predikcija box-ova, ponovo oslanjajući se na `GetOffset` metodu i druge. Na kraju, koristi se metoda `FilterBoundingBoxes` za filtriranje box-ova koji se preklapaju.
+
+```cs
+       /**
+       * Svaka slika se deli u grid 13 x 13 celija. Svaka celija ima 5 bounding box-ova
+       * Ovde se procesuiraju svi box-ovi svake celije
+       */
+       for (int row = 0; row < ROW_COUNT; row++)
+         for (int column = 0; column < COL_COUNT; column++)
+             for (int box = 0; box < BOXES_PER_CELL; box++)
+             {
+                 /**
+                  * izracunati polaznu tacku box-a u odnosu na jednodimenzinalni ulaz
+                  */
+                 var channel = (box * (CLASS_COUNT + BOX_INFO_FEATURE_COUNT));
+
+                 /**
+                  * ExtractBoundingBoxDimensions za nalazenje dimenzija box-a
+                  */
+                 BoundingBoxDimensions boundingBoxDimensions = ExtractBoundingBoxDimensions(yoloModelOutputs, row, column, channel);
+                 
+                 ...
+                 
+                 /**
+                  * Ako bounding box prevazilazi 'threshold' napraviti novi i dodati ga u listu box-ova
+                  */
+                 boxes.Add(new BoundingBox(){ Dimensions = new BoundingBoxDimensions, ...}};
+```
+
+### Korišćenje modela
+
+**Eksterno učitana slika** može se predati modulu za detekciju objekata metodom `ProcessExternalImage` nad detection instancama.
+
+```cs
+       /**
+       * Potrebna je instanca OnnxModelScorer-a kako bi se ocenio ulaz
+       */
+       modelScorer = new OnnxModelScorer(modelFilePath, mlContext);
+       IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
+
+       OutputParser parser = new OutputParser();
+       var boundingBoxes =
+        probabilities
+        .Select(probability => parser.ParseOutputs(probability))
+        .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
+
+       IList<BoundingBox> detectedObjects = boundingBoxes.ElementAt(0);
+       LogDetectedObjects(selectedImagePath, detectedObjects);
+       Bitmap bitmap = BitmapWithBoundingBox(selectedImagePath, detectedObjects);
+```
+
+`BitmapWithBoundingBox` metoda iscrtava bounding box-ove oko predikcija objekata. Svaki objekat će biti uokviren i imaće labelu koja naznačava njegovu klasu.
+
+Pipeline mora da poznaje šemu podataka sa kojima radi. Ovde će se koristiti pipeline od četiri transformacije.
+
+```cs
+       /**
+       * Pipeline ima 4 transformacije:
+       *  LoadImages za ucitavanje Bitmap slike
+       *  ResizeImages za reskaliranje ucitane slike (ovde je to 416 x 416)
+       *  ExtractPixels menja reprezentaciju piksela u numericki vektor
+       *  ApplyOnnxModel ucitava ONNX model i koristi ga za score-ing
+       */
+       var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "image", imageFolder: "", inputColumnName: nameof(ImageNetData.ImagePath))
+                     .Append(mlContext.Transforms.ResizeImages(outputColumnName: "image", imageWidth: ImageNetSettings.imageWidth, imageHeight: ImageNetSettings.imageHeight, inputColumnName: "image"))
+                     .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "image"))
+                     .Append(mlContext.Transforms.ApplyOnnxModel(modelFile: modelLocation, outputColumnNames: new[] { TinyYoloModelSettings.ModelOutput }, inputColumnNames: new[] { TinyYoloModelSettings.ModelInput }));
+```
+
+Izlaz iz modela se prosledjuje parser klasi kako bi se dobile prave vrednosti verovatnoća za svaki bounding box. Na kraju, vizualizacija se svodi na praćenje svih box-ova i iscrtavanja pravougaonika oko detektovanih objekata.
+
+```cs
+       IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
+
+       OutputParser parser = new OutputParser();
+       var boundingBoxes =
+         probabilities
+         .Select(probability => parser.ParseOutputs(probability))
+         .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
+```

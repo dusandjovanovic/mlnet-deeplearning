@@ -76,10 +76,8 @@ Primer generisanja modela za klasifikaciju na osnovu dataset-a koji sadrži poda
 Izlaz koji se dobija sadrži više stavki:
 
 * Serijalizovani `.zip` modela koji može da se koristi
-* C# kod:
-** C# kod za pokretanje/ocenjivanje modela u .NET okruženju
-** C# kod sa kodom koji se koristio za treniranje modela
-* Log fajl koji sadrži korisne informacije u procesu izgradnje modela.
+* C# kod za pokretanje/ocenjivanje modela u .NET okruženju
+* Log fajl koji sadrži korisne informacije u procesu izgradnje modela
 
 Model i generisani C# kod mogu se direktno koristiti u .NET okruženju i framework-u poput ASP.NET Core bez obzira da li se radi o web ili desktop aplikacijama. Na osnovu loga se može vršiti ručno testiranje ili ispitivanje koji su algoritmi izabrani u procesu treniranja modela.
 

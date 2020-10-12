@@ -299,7 +299,33 @@ Neki od načina poboljšanja modela:
 
 # Implementacija - Transfer learning i klasifikacija slika
 
-Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna. 
+Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna.
+
+### Dataset
+
+Korišćeni dataset za treniranje zove se _Intel Image Classification - Image Scene Classification of Multiclass_. Sadrži podatke za treniranje `seg_train` kao i skup podataka za evaluaciju modela u `seg_pred`. Ideja je napraviti **klasifikacioni model za prepoznavanje scena slika** ~ oblikovan po ovom datasetu podataka. Dakle, za svaku od kategorija u datasetu treba da postoji kategorija predikcije u novom modelu.
+
+    dataset
+        |
+        ->seg_train
+        |  |
+        |  ->buildings  -> (1.jpg, 2.jpg, ...)
+        |  |   
+        |  ->glacier
+        |  |   
+        |  ->sea
+        |  |   
+        |  ->forest
+        |  |   
+        |  ->street
+        |  |   
+        |  ->mountains
+        |
+        ->seg_test
+        |  
+        |
+        ->seg_pred
+
 
 Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 

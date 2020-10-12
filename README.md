@@ -317,34 +317,74 @@ Klasa `ModelInput` koristi se za ulazne podatke kojima se hrani model i treba da
 
 Klasa `ModelOutput` sadrži izlaz iz modela uključujući i **predikciju klase**.
 
-Klasa `Classification` sadrži sve važne metode za treniranje modela i kasniju predikciju. Treba pre svega napraviti *chain* transformacija gde će se labela konvertovati u numeričku vrednost a zatim i primeniti transformacija `LoadRawImageBytes`. Pozivom metoda `Fit` i `Transform` dobija se uskladjeni skup podataka od dataseta za treniranje. Za treniranje su potrebna dva pod-seta - jedan za treniranje i drugi za validaciju koji se dobijaju po odnosu 70/30.
+Klasa `Classification` sadrži sve važne metode za treniranje modela i kasniju predikciju. Treba pre svega napraviti *chain* transformacija gde će se labela konvertovati u numeričku vrednost a zatim i primeniti transformacija `LoadRawImageBytes`. Pozivom metoda `Fit` i `Transform` dobija se uskladjeni skup podataka od dataseta za treniranje.
+
+Počinje se učitavanjem svih podataka iz dataseta:
 
 ```cs
-     var preprocessingPipeline = mlContext.Transforms.Conversion.MapValueToKey(
-             inputColumnName: "Label",
-             outputColumnName: "LabelAsKey")
-         .Append(mlContext.Transforms.LoadRawImageBytes(
-             outputColumnName: "Image",
-             imageFolder: assetsRelativePath,
-             inputColumnName: "ImagePath"));
-      ...
-      IDataView preProcessedData = preprocessingPipeline
-             .Fit(shuffledData)
-             .Transform(shuffledData);
-      ...
-      TrainTestData trainSplit = mlContext.Data.TrainTestSplit(data: preProcessedData, testFraction: 0.3);
-      TrainTestData validationTestSplit = mlContext.Data.TrainTestSplit(trainSplit.TestSet);
+/**
+* MLContext klasa je polazna tacka inicijalizacije
+* kreira novo ML.NET okruzenje i perzistira model koji se trenira
+*/
+mlContext = new MLContext();
+
+/**
+* Podaci se ucitavaju redosledom kojim su u direktorijumima
+* da bi se balansirao ulaz treba odradi shuffling nad njima
+*/
+IEnumerable<ImageData> images = LoadImagesFromDirectory(folder: assetsRelativePath, useFolderNameAsLabel: true);
+IDataView imageData = mlContext.Data.LoadFromEnumerable(images);
+IDataView shuffledData = mlContext.Data.ShuffleRows(imageData);
+
+```
+Neophodno je učitati same slike i izvršiti konverziju labela u numeričke vrednosti. Za treniranje su potrebna dva pod-seta - jedan za treniranje i drugi za validaciju koji se dobijaju po odnosu 70/30. Subset za validaciju se zatim dalje deli po odnosu 90/10 gde se veći deo ulaza koristi za treniranje a manji za validaciju.
+
+```cs
+/**
+* Model ocekuje da ulazi budu u numerickom obliku -> LabelAsKey
+* EstimatorChain se pravi od MapValueToKey i LoadRawImageBytes transofrmacija
+*/
+var preprocessingPipeline = mlContext.Transforms.Conversion.MapValueToKey(
+      inputColumnName: "Label",
+      outputColumnName: "LabelAsKey")
+  .Append(mlContext.Transforms.LoadRawImageBytes(
+      outputColumnName: "Image",
+      imageFolder: assetsRelativePath,
+      inputColumnName: "ImagePath"));
+
+...
+
+ /**
+*  Kvalitet dobijenih procena se meri na osnovu validacionog podskupa
+*  Pred-procesirani podaci se prema tome dele
+*  70% se koristi za treniranje
+*  30% za validaciju
+*/
+TrainTestData trainSplit = mlContext.Data.TrainTestSplit(data: preProcessedData, testFraction: 0.3);
+TrainTestData validationTestSplit = mlContext.Data.TrainTestSplit(trainSplit.TestSet);
 ```
 
 Treniranje se sastoji iz par koraka, prvo se *Image Classification API* koristi za treniranje a zatim se enkodirane labele prevode u izvorne kategoričke vrednosti. **Pipeline treniranja** sadrži `mapLabelEstimator` i `ImageClassificationTrainer`.
 
 ```cs
-       var trainingPipeline = mlContext.MulticlassClassification.Trainers.ImageClassification(classifierOptions)
-           .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
-       ITransformer trainedModel = trainingPipeline.Fit(trainSet);
+var trainingPipeline = mlContext.MulticlassClassification.Trainers.ImageClassification(classifierOptions)
+    .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
+    
+ITransformer trainedModel = trainingPipeline.Fit(trainSet);
 ```
 
 Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasifikaciju nad kontekstom izgradjenog modela. Prva metoda se koristi interno nakon treniranja i zove se za deo dataseta a druga se koristi na zahtev kada se sa Front-End-a aplikacije šalje slika na klasifikaciju.
+
+### Korišćenje modela - klasifikacija
+
+Potrebno je koristiti convenience API nazvan *Prediction Engine* koji dozvoljava izvršenje predikcije nad jednom instancom podataka, potrebno je pre toga svesti `IDataView` na odgovarajući model objekat. Svaka predikcija se ispisuje u konzoli.
+
+```cs
+PredictionEngine<ModelInput, ModelOutput> predictionEngine = mlContext.Model.CreatePredictionEngine<ModelInput, ModelOutput>(trainedModel);
+
+ModelInput image = mlContext.Data.CreateEnumerable<ModelInput>(data, reuseRowObject: true).First();
+ModelOutput prediction = predictionEngine.Predict(image);
+```
 
 # Implementacija - Detekcija objekata
 
@@ -371,30 +411,30 @@ Klasa `OutputParser` treba da obezbedi prethodno naznačeno parsovanje izlaza mo
 Ova klasa definiše temena bounding box-ova u vidu odnosa visina/širina. Prilikom proračuna traži se pomeraj od podrazumevanih vrednosti. Takodje treba definisati koje će klase model da predvidi kao i boje uparene sa svakom od klasa. Neke od važnih pomoćnih funkcija su `GetOffset` za mapiranje elemenata id jednodimenzionalnog izlaza na poziciju u tenzoru. `ExtractBoundingBoxes` za izvlačenje dimenzija box-ova na osnovu prethodne metode. `GetConfidence` za izvlačenje confidence vrednosti. `ExtractClasses` za izvlačenje klasnih predikcija box-ova, ponovo oslanjajući se na `GetOffset` metodu i druge. Na kraju, koristi se metoda `FilterBoundingBoxes` za filtriranje box-ova koji se preklapaju.
 
 ```cs
-       /**
-       * Svaka slika se deli u grid 13 x 13 celija. Svaka celija ima 5 bounding box-ova
-       * Ovde se procesuiraju svi box-ovi svake celije
-       */
-       for (int row = 0; row < ROW_COUNT; row++)
-         for (int column = 0; column < COL_COUNT; column++)
-             for (int box = 0; box < BOXES_PER_CELL; box++)
-             {
-                 /**
-                  * izracunati polaznu tacku box-a u odnosu na jednodimenzinalni ulaz
-                  */
-                 var channel = (box * (CLASS_COUNT + BOX_INFO_FEATURE_COUNT));
+/**
+* Svaka slika se deli u grid 13 x 13 celija. Svaka celija ima 5 bounding box-ova
+* Ovde se procesuiraju svi box-ovi svake celije
+*/
+for (int row = 0; row < ROW_COUNT; row++)
+  for (int column = 0; column < COL_COUNT; column++)
+      for (int box = 0; box < BOXES_PER_CELL; box++)
+      {
+          /**
+           * izracunati polaznu tacku box-a u odnosu na jednodimenzinalni ulaz
+           */
+          var channel = (box * (CLASS_COUNT + BOX_INFO_FEATURE_COUNT));
 
-                 /**
-                  * ExtractBoundingBoxDimensions za nalazenje dimenzija box-a
-                  */
-                 BoundingBoxDimensions boundingBoxDimensions = ExtractBoundingBoxDimensions(yoloModelOutputs, row, column, channel);
-                 
-                 ...
-                 
-                 /**
-                  * Ako bounding box prevazilazi 'threshold' napraviti novi i dodati ga u listu box-ova
-                  */
-                 boxes.Add(new BoundingBox(){ Dimensions = new BoundingBoxDimensions, ...}};
+          /**
+           * ExtractBoundingBoxDimensions za nalazenje dimenzija box-a
+           */
+          BoundingBoxDimensions boundingBoxDimensions = ExtractBoundingBoxDimensions(yoloModelOutputs, row, column, channel);
+
+          ...
+
+          /**
+           * Ako bounding box prevazilazi 'threshold' napraviti novi i dodati ga u listu box-ova
+           */
+          boxes.Add(new BoundingBox(){ Dimensions = new BoundingBoxDimensions, ...}};
 ```
 
 ### Korišćenje modela
@@ -402,21 +442,21 @@ Ova klasa definiše temena bounding box-ova u vidu odnosa visina/širina. Prilik
 **Eksterno učitana slika** može se predati modulu za detekciju objekata metodom `ProcessExternalImage` nad detection instancama.
 
 ```cs
-       /**
-       * Potrebna je instanca OnnxModelScorer-a kako bi se ocenio ulaz
-       */
-       modelScorer = new OnnxModelScorer(modelFilePath, mlContext);
-       IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
+/**
+* Potrebna je instanca OnnxModelScorer-a kako bi se ocenio ulaz
+*/
+modelScorer = new OnnxModelScorer(modelFilePath, mlContext);
+IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
 
-       OutputParser parser = new OutputParser();
-       var boundingBoxes =
-        probabilities
-        .Select(probability => parser.ParseOutputs(probability))
-        .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
+OutputParser parser = new OutputParser();
+var boundingBoxes =
+ probabilities
+ .Select(probability => parser.ParseOutputs(probability))
+ .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 
-       IList<BoundingBox> detectedObjects = boundingBoxes.ElementAt(0);
-       LogDetectedObjects(selectedImagePath, detectedObjects);
-       Bitmap bitmap = BitmapWithBoundingBox(selectedImagePath, detectedObjects);
+IList<BoundingBox> detectedObjects = boundingBoxes.ElementAt(0);
+LogDetectedObjects(selectedImagePath, detectedObjects);
+Bitmap bitmap = BitmapWithBoundingBox(selectedImagePath, detectedObjects);
 ```
 
 `BitmapWithBoundingBox` metoda iscrtava bounding box-ove oko predikcija objekata. Svaki objekat će biti uokviren i imaće labelu koja naznačava njegovu klasu.
@@ -424,27 +464,27 @@ Ova klasa definiše temena bounding box-ova u vidu odnosa visina/širina. Prilik
 Pipeline mora da poznaje šemu podataka sa kojima radi. Ovde će se koristiti pipeline od četiri transformacije.
 
 ```cs
-       /**
-       * Pipeline ima 4 transformacije:
-       *  LoadImages za ucitavanje Bitmap slike
-       *  ResizeImages za reskaliranje ucitane slike (ovde je to 416 x 416)
-       *  ExtractPixels menja reprezentaciju piksela u numericki vektor
-       *  ApplyOnnxModel ucitava ONNX model i koristi ga za score-ing
-       */
-       var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "image", imageFolder: "", inputColumnName: nameof(ImageNetData.ImagePath))
-                     .Append(mlContext.Transforms.ResizeImages(outputColumnName: "image", imageWidth: ImageNetSettings.imageWidth, imageHeight: ImageNetSettings.imageHeight, inputColumnName: "image"))
-                     .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "image"))
-                     .Append(mlContext.Transforms.ApplyOnnxModel(modelFile: modelLocation, outputColumnNames: new[] { TinyYoloModelSettings.ModelOutput }, inputColumnNames: new[] { TinyYoloModelSettings.ModelInput }));
+/**
+* Pipeline ima 4 transformacije:
+*  LoadImages za ucitavanje Bitmap slike
+*  ResizeImages za reskaliranje ucitane slike (ovde je to 416 x 416)
+*  ExtractPixels menja reprezentaciju piksela u numericki vektor
+*  ApplyOnnxModel ucitava ONNX model i koristi ga za score-ing
+*/
+var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "image", imageFolder: "", inputColumnName: nameof(ImageNetData.ImagePath))
+              .Append(mlContext.Transforms.ResizeImages(outputColumnName: "image", imageWidth: ImageNetSettings.imageWidth, imageHeight: ImageNetSettings.imageHeight, inputColumnName: "image"))
+              .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "image"))
+              .Append(mlContext.Transforms.ApplyOnnxModel(modelFile: modelLocation, outputColumnNames: new[] { TinyYoloModelSettings.ModelOutput }, inputColumnNames: new[] { TinyYoloModelSettings.ModelInput }));
 ```
 
 Izlaz iz modela se prosledjuje parser klasi kako bi se dobile prave vrednosti verovatnoća za svaki bounding box. Na kraju, vizualizacija se svodi na praćenje svih box-ova i iscrtavanja pravougaonika oko detektovanih objekata.
 
 ```cs
-       IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
+IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
 
-       OutputParser parser = new OutputParser();
-       var boundingBoxes =
-         probabilities
-         .Select(probability => parser.ParseOutputs(probability))
-         .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
+OutputParser parser = new OutputParser();
+var boundingBoxes =
+  probabilities
+  .Select(probability => parser.ParseOutputs(probability))
+  .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 ```

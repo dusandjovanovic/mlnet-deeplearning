@@ -303,13 +303,9 @@ Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (M
 
 Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 
-Treniranje polazi od već treniranog modela koji se koristi i pravi se nadgradnja koja rešava problem pomenute kategorizacije. Treniranje ima dve faze - prva je nad *zaledjenim slojevima* postojećeg modela (svi slojevi do penultimate sloja) i ovde se vrednosti samo propuštaju. Šabloni ovih slojeva se bave računicom koje prave razliku izmedju osnovnih klasa slika. Druga faza je faza pravog treniranja gde se refinira poslednji sloj mreže - iterativna je i uzima u obzir gubitke preciznosti kako bi model bio što bolji.
+Treniranje polazi od već treniranog modela koji se koristi i pravi se nadgradnja koja rešava problem pomenute kategorizacije. Treniranje ima dve faze - prva je nad *zaledjenim slojevima* postojećeg modela (svi slojevi do penultimate sloja) i ovde se vrednosti samo propuštaju. Šabloni ovih slojeva se bave računicom koje prave razliku izmedju osnovnih klasa slika. Druga faza je faza pravog treniranja gde se refinira poslednji sloj mreže - iterativna je i uzima u obzir gubitke preciznosti kako bi model bio što bolji. Polazni model (101-slojna varijanta Rezidualnog mrežnog (ResNet) v2 modela) kategorizuje sliku u više hiljada kateogirja i za ulaznu sliku veličine 224 x 224px daje verovatnoće pripadanja svakoj kategoriji. Deo ovog modela se koristi za treniranje novog modela kako bi davao predikcije izmedju novih klasa.
 
-Polazni model (101-slojna varijanta Rezidualnog mrežnog (ResNet) v2 modela) kategorizuje sliku u više hiljada kateogirja i za ulaznu sliku veličine 224 x 224px daje verovatnoće pripadanja svakoj kategoriji. Deo ovog modela se koristi za treniranje novog modela kako bi davao predikcije izmedju dve klase.
-
-![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/tutorials/media/image-classification-api-transfer-learning/sdnet2018decksamples.png "Categories")
-
-Novi model će biti u stanju da kategorizuje sliku u dve nove kategorije - **sa pukotinom** i slika **bez pokotine**. Dataset koji se koristi za dodatno testiranje sadrži slike podeljenje u dva direktorijuma, u jednom su napukle a u drugom ostale.
+Novi model će biti u stanju da kategorizuje sliku u **više različitih kategorija**. Dataset koji se koristi za treniranje **podeljen je po direktorijumima** gde slike **iste klase pripadaju istom folderu**. Treba ovo uzeti u obzir prilikom pisanja pipeline-a i naznačiti modelu. Rezultat ovoga je model koji je sposoban da se adaptira na datasetove formirane u ovom obliku. U ovom slučaju to su **kategorije glacier, sea, forest, street, mountains i buildings.**
 
 Klasa `ImageData` koristi se da opiše šemu ulaznih podataka. 
 

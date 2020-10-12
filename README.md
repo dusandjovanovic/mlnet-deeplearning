@@ -39,8 +39,6 @@ Model mašinskog učenja može se **trenirati** na lokalnoj mašini ili cloud-u 
 
 Nakon što se odabere scenario potrebno je dotaviti dataset u jednom od podržanih formata (`.tsv`, `.csv`, `.txt` ili `.jpg` i `.png` u slučaju klasifikacije slika). Dataset podataka se koristi za treniranje, evaluaciju i izbor najbolje modela za scenario.
 
-![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/model-builder-steps.png "Model builder")
-
 ### Izbor izlaza za predikciju
 
 Dataset se može posmatrati kao tabela redova koji su primerci za testiranje - gde svaki od redova ima više atributa po kolonama. Svaki red ima **labelu** kao atribut koji treba predvideti i ostale **fature atribute**. Ovi preostali atributi koriste se za predikciju labele. Evo jednog [primera dataset-a](https://raw.githubusercontent.com/dotnet/machinelearning-samples/master/datasets/taxi-fare-train.csv) nad kojim se može ovo opisati. Ovo je primer podataka za predikciju cena taxi prevoza, feature atributi su trajanje vožnje taxijem i njena dužina.
@@ -74,8 +72,6 @@ Postoji više mogućnosti za poboljšanje nedovoljno dobrog modela poput dužeg 
 Primer generisanja modela za klasifikaciju na osnovu dataset-a koji sadrži podatke sa servisa yelp.
 
 `mlnet classification --dataset "yelp_labelled.txt" --label-col 1 --has-header false --train-time 10`
-
-![alt text](https://docs.microsoft.com/en-us/dotnet/machine-learning/media/automate-training-with-cli/mlnet-classification-powershell.gif "CLI")
 
 Izlaz koji se dobija sadrži više stavki:
 

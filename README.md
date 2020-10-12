@@ -338,3 +338,6 @@ Treniranje se sastoji iz par koraka, prvo se *Image Classification API* koristi 
 ```
 
 Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasifikaciju nad kontekstom izgradjenog modela. Prva metoda se koristi interno nakon treniranja i zove se za deo dataseta a druga se koristi na zahtev kada se sa Front-End-a aplikacije šalje slika na klasifikaciju.
+
+# Implementacija - Detekcija objekata
+

@@ -309,3 +309,32 @@ Novi model će biti u stanju da kategorizuje sliku u dve nove kategorije - **sa 
 
 Klasa `Classification` sadrž
 `ImageData` klasa se koristi da opiše šemu ulaznih podataka. `ModelInput` klasa se koristi za ulazne podatke kojima se hrani model i treba da sadrže **byte-reprezentaciju slika**. `ModelOutput` klasa sadrži izlaz iz modela uključujući i **predikciju klase**.
+
+Klasa `Classification` sadrži sve važne metode za treniranje modela i kasniju predikciju. Treba pre svega napraviti *chain* transformacija gde će se labela konvertovati u numeričku vrednost a zatim i primeniti transformacija `LoadRawImageBytes`. Pozivom metoda `Fit` i `Transform` dobija se uskladjeni skup podataka od dataseta za treniranje. Za treniranje su potrebna dva pod-seta - jedan za treniranje i drugi za validaciju koji se dobijaju po odnosu 70/30.
+
+```cs
+     var preprocessingPipeline = mlContext.Transforms.Conversion.MapValueToKey(
+             inputColumnName: "Label",
+             outputColumnName: "LabelAsKey")
+         .Append(mlContext.Transforms.LoadRawImageBytes(
+             outputColumnName: "Image",
+             imageFolder: assetsRelativePath,
+             inputColumnName: "ImagePath"));
+      ...
+      IDataView preProcessedData = preprocessingPipeline
+             .Fit(shuffledData)
+             .Transform(shuffledData);
+      ...
+      TrainTestData trainSplit = mlContext.Data.TrainTestSplit(data: preProcessedData, testFraction: 0.3);
+      TrainTestData validationTestSplit = mlContext.Data.TrainTestSplit(trainSplit.TestSet);
+```
+
+Treniranje se sastoji iz par koraka, prvo se *Image Classification API* koristi za treniranje a zatim se enkodirane labele prevode u izvorne kategoričke vrednosti. **Pipeline treniranja** sadrži `mapLabelEstimator` i `ImageClassificationTrainer`.
+
+```cs
+       var trainingPipeline = mlContext.MulticlassClassification.Trainers.ImageClassification(classifierOptions)
+           .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
+       ITransformer trainedModel = trainingPipeline.Fit(trainSet);
+```
+
+Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasifikaciju nad kontekstom izgradjenog modela. Prva metoda se koristi interno nakon treniranja i zove se za deo dataseta a druga se koristi na zahtev kada se sa Front-End-a aplikacije šalje slika na klasifikaciju.

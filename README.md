@@ -295,6 +295,8 @@ Neki od načina poboljšanja modela:
 
 # Implementacija - Transfer learning i klasifikacija slika
 
+
+
 Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 
 Treniranje polazi od već treniranog modela koji se koristi i pravi se nadgradnja koja rešava problem pomenute kategorizacije. Treniranje ima dve faze - prva je nad *zaledjenim slojevima* postojećeg modela (svi slojevi do penultimate sloja) i ovde se vrednosti samo propuštaju. Šabloni ovih slojeva se bave računicom koje prave razliku izmedju osnovnih klasa slika. Druga faza je faza pravog treniranja gde se refinira poslednji sloj mreže - iterativna je i uzima u obzir gubitke preciznosti kako bi model bio što bolji.
@@ -340,4 +342,6 @@ Treniranje se sastoji iz par koraka, prvo se *Image Classification API* koristi 
 Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasifikaciju nad kontekstom izgradjenog modela. Prva metoda se koristi interno nakon treniranja i zove se za deo dataseta a druga se koristi na zahtev kada se sa Front-End-a aplikacije šalje slika na klasifikaciju.
 
 # Implementacija - Detekcija objekata
+
+Detekcija objekata primenjuje klasifikaciju slika na granularniji način tako što locira a zatim i kategoriše entitete (objekte) na slikama.
 

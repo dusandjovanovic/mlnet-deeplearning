@@ -297,7 +297,7 @@ Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (M
 
 ### Dataset
 
-Korišćeni dataset za treniranje zove se _Intel Image Classification - Image Scene Classification of Multiclass_. Sadrži podatke za treniranje `seg_train` kao i skup podataka za evaluaciju modela u `seg_pred`. Ideja je napraviti **klasifikacioni model za prepoznavanje scena slika** ~ oblikovan po ovom datasetu podataka. Dakle, za svaku od kategorija u datasetu treba da postoji kategorija predikcije u novom modelu.
+Korišćeni dataset za treniranje zove se _Intel Image Classification - Image Scene Classification of Multiclass_ i može se naći [ovde](https://www.kaggle.com/puneet6060/intel-image-classification). Sadrži podatke za treniranje `seg_train` kao i skup podataka za evaluaciju modela u `seg_pred`. Ideja je napraviti **klasifikacioni model za prepoznavanje scena slika** ~ oblikovan po ovom datasetu podataka. Dakle, za svaku od kategorija u datasetu treba da postoji kategorija predikcije u novom modelu.
 
     dataset
         |
@@ -320,6 +320,11 @@ Korišćeni dataset za treniranje zove se _Intel Image Classification - Image Sc
         |
         ->seg_pred
 
+```diff
+- Napomena* na repozitorijumu se ne nalazi celokupan dataset već samo manje deo jer je 1GB+!
+
++ Dataset se može skinuti sa linka i raspakovati u /dataset/ folder uokviru projekta.
+```
 
 Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 

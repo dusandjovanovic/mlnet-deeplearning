@@ -508,14 +508,14 @@ var boundingBoxes =
 # Prototip projekat
 
 Projekat demostrira dve funkcionalnosti čije su implementacije prethodno opisane:
-* **Klasifikaciju slika**
-* **Detektciju objekata**
+* **Klasifikaciju slika** u vidu prepoznavanja scene slike
+* **Detektciju objekata** i označavanje istih na slici (zajedno sa klasnim atributom objekta)
 
-Prilikom pokretanja programa prvo je neophodno **trenirati model podacima** iz dataseta (koji je importovan u sklopu projekta) - ili nakon prvog pokretanja učitati keširane vrednsoti za predikciju. 
+Prilikom pokretanja programa prvo je neophodno **trenirati model podacima** iz dataseta (koji je importovan u sklopu projekta) - ili nakon prvog pokretanja učitati keširane vrednsoti za predikciju. U ovom slučaju, po datasetu za treniranje, model može da prepozna nekoliko kategorija a to su **kategorije glacier, sea, forest, street, mountains i buildings.**
 
 **Na desnoj strani programa postoji konzolni prikaz napredovanja treniranja kao i izlaz svih funkcija koje će se kasnije koristiti.** U outputu koji sledi je prikazan proces treniranja na osnovu dataseta koji prolazi kroz dve faze - **Bottlneck** i **Training**.
 
-Na kraju se odvaja 10% dataseta za validaciju i mogu se videti na izlazu rezultati poredjenja.
+Na kraju se odvaja mali deo dataseta za validaciju i mogu se videti rezultati poredjenja u izlaznoj konzoli na desnoj strani (ovaj deo dataseta se nije koristio u procesu treniranja).
 
 `Image: 2615.jpg | Actual Value: mountain | Predicted Value: mountain` na primer predstavlja tačnu predikciju.
 
@@ -577,13 +577,13 @@ End of Image-clasification..
 
 Nakon inicijalizacije modela on se može i koristiti. Pored klasifikacije postoji i model za detekciju objekata ali je već gotovo treniran i ne treba prolaziti kroz fazu treniranja. Izborom dugmića `Browse` se selektuje slike sa filesystem-a, zatim se može klasifikovati ili predati modulu za detekciju objekata klikom na `Classify` ili `Object detection` dugmiće.
 
-**`Pritom, obe procedure beleže rezultate u konzoli a detekcija objekata dodatno isrtava pravougaonike sa klasnim labelama oko detektovanih objekata.`**
+**Pritom, obe procedure beleže rezultate u konzoli a detekcija objekata dodatno isrtava pravougaonike sa klasnim labelama oko detektovanih objekata.**
 
 ![alt text][screenshot_02]
 
 [screenshot_02]: screenshots/screenshot_02.png
 
-Ovo je bio primer uspešne klasifikacije učitane slike - ovo je slika van dataseta koju model prvi put sada prepoznaje.
+Ovo je bio primer uspešne klasifikacije učitane slike - ovo je slika van dataseta koju model prvi put sada prepoznaje. Može se videti rezultat klasifikacije kao scene **sea**.
 
 ![alt text][screenshot_01]
 

@@ -505,6 +505,76 @@ var boundingBoxes =
   .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 ```
 
+# Implementacija - Arhitektura
+
+Sve klase su prethodno objašnjene, evo kratkog pregleda rasporeda i organizacije. Moduli za klasifikaciju i detekciju imaju odvojene `namespace-ove` - `MLNet.classification` i `MLNet.detection`. Sve pomoćne klase se nalaze u ovim modulima.
+
+```
+/
+  App.xaml
+  MainWindow.xaml
+  AssemlyInfo.cs
+  classification/
+    workspace/ -> radni direktorijum koji sadrži .pb fajl modela i kešira detalje klasifikacije
+    Classification.cs
+    ImageData.cs
+    ImageDataInMemory.cs
+    ModelInput.cs
+    ModelOutput.cs
+    ...
+  detection/
+    model/
+      TinyYolo2_model.onnx
+    BoundingBox.cs
+    Detection.cs -> glavna klasa za detekciju objekata
+    DimensionsBase.cs
+    ImageNetData.cs
+    ImageNetPrediction.cs
+    OnnxModelScorer.cs
+    OutputParser.cs
+    ...
+  common/
+    ImageUtils.cs
+    NativeConsole.cs
+    NativeMethods.cs
+  dataset/
+    seg_pred/
+    seg_test/
+    seg_train -> dataset podaci za testiranje
+```
+
+Instance klasa se inicijalizuju samo jednom i kasnije koriste u projektu.
+
+```
+/**
+* Instanca klase za klasifikaciju
+*/
+private Classification classification = new Classification();
+
+/**
+* Instanca klase za detekciju objekata
+*/
+private Detection detection = new Detection();
+
+/**
+* Override klasa konzolnog ulaza
+*/
+private NativeConsole nativeConsole;
+```
+
+Neophodno je nakon renderovanja UI elemenata prozora pripremiti obe instance. U slučaju klasifikacije to je treniranje (ili učitavanje keširanog modela ako je već treniran u prethodnoj sesiji), u slučaju detekcije objekata to je učitavanje treniranog modela. Obe klase poseduju metodu `.Process()` kojom se ovo i dobija.
+
+```
+private void Initiate(object state)
+{
+       classification.Process();
+       detection.Process();
+       Console.Out.Flush();
+}
+```
+
+Nakon ovoga mogu se koristiti ostale metode klasa poput `.ClassifyExternalImage(Bitmap)` za klasifikaciju učitanih slika ili pak `.ProcessExternalImage(string)` za detekciju objekata. Obe metode pripadaju odvojenim instancama za klasifikaciju/detekciju respektivno.
+
 # Prototip projekat
 
 Projekat demostrira dve funkcionalnosti čije su implementacije prethodno opisane:

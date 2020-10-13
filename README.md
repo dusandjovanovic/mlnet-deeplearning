@@ -507,10 +507,13 @@ var boundingBoxes =
 
 # Implementacija - Arhitektura
 
+Kao "Front-End" za deomstraciju odabran je WPF projekat nad .NET-om. Kako se ML.NET može lako integrisati uokviru celog .NET/.NET Core okruženja princip za integraciju bio bi sličan u bilo kojoj drugoj Majkrosoftovoj tehnologiji iz ovog steka.
+
 Sve klase su prethodno objašnjene, evo kratkog pregleda rasporeda i organizacije. Moduli za klasifikaciju i detekciju imaju odvojene `namespace-ove` - `MLNet.classification` i `MLNet.detection`. Sve pomoćne klase se nalaze u ovim modulima.
 
 ```
 /
+  MLNet.sln
   App.xaml
   MainWindow.xaml
   AssemlyInfo.cs

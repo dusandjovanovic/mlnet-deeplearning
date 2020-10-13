@@ -575,18 +575,30 @@ End of Image-clasification..
 
 ```
 
+Nakon inicijalizacije modela on se može i koristiti. Pored klasifikacije postoji i model za detekciju objekata ali je već gotovo treniran i ne treba prolaziti kroz fazu treniranja. Izborom dugmića `Browse` se selektuje slike sa filesystem-a, zatim se može klasifikovati ili predati modulu za detekciju objekata klikom na `Classify` ili `Object detection` dugmiće.
+
+**`Pritom, obe procedure beleže rezultate u konzoli a detekcija objekata dodatno isrtava pravougaonike sa klasnim labelama oko detektovanih objekata.`**
+
 ![alt text][screenshot_02]
 
 [screenshot_02]: screenshots/screenshot_02.png
+
+Ovo je bio primer uspešne klasifikacije učitane slike - ovo je slika van dataseta koju model prvi put sada prepoznaje.
 
 ![alt text][screenshot_01]
 
 [screenshot_01]: screenshots/screenshot_01.png
 
+Još jedan primer klasifikacije slike - u ovom slučaju druge klase.
+
 ![alt text][screenshot_03]
 
 [screenshot_03]: screenshots/screenshot_03.png
 
+Ovo je primer detekcije objekata, detektovani objekti se beleže u konzoli - a rezultat sa vrednostima sigurnosti se može videti u konzoli.
+
 ![alt text][screenshot_04]
 
 [screenshot_04]: screenshots/screenshot_04.png
+
+Još jedan malo očigledniji primer detekcije objekata.

@@ -545,7 +545,7 @@ Sve klase su prethodno objašnjene, evo kratkog pregleda rasporeda i organizacij
 
 Instance klasa se inicijalizuju samo jednom i kasnije koriste u projektu.
 
-```
+```cs
 /**
 * Instanca klase za klasifikaciju
 */
@@ -564,7 +564,7 @@ private NativeConsole nativeConsole;
 
 Neophodno je nakon renderovanja UI elemenata prozora pripremiti obe instance. U slučaju klasifikacije to je treniranje (ili učitavanje keširanog modela ako je već treniran u prethodnoj sesiji), u slučaju detekcije objekata to je učitavanje treniranog modela. Obe klase poseduju metodu `.Process()` kojom se ovo i dobija.
 
-```
+```cs
 private void Initiate(object state)
 {
        classification.Process();

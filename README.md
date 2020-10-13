@@ -291,24 +291,6 @@ Neki od načina poboljšanja modela:
 * Korišćenje smislenih podataka
 * Cross-validacija (podela dataseta i primena različitih algoritama nad grupama podataka) ili pak izbor drugog algoritma
 
-# Prototip projekat
-
-![alt text][screenshot_01]
-
-[screenshot_01]: screenshots/screenshot_01.png
-
-![alt text][screenshot_02]
-
-[screenshot_02]: screenshots/screenshot_02.png
-
-![alt text][screenshot_03]
-
-[screenshot_03]: screenshots/screenshot_03.png
-
-![alt text][screenshot_04]
-
-[screenshot_04]: screenshots/screenshot_04.png
-
 # Implementacija - Transfer learning i klasifikacija slika
 
 Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna.
@@ -522,3 +504,89 @@ var boundingBoxes =
   .Select(probability => parser.ParseOutputs(probability))
   .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 ```
+
+# Prototip projekat
+
+Projekat demostrira dve funkcionalnosti čije su implementacije prethodno opisane:
+* **Klasifikaciju slika**
+* **Detektciju objekata**
+
+Prilikom pokretanja programa prvo je neophodno **trenirati model podacima** iz dataseta (koji je importovan u sklopu projekta) - ili nakon prvog pokretanja učitati keširane vrednsoti za predikciju. 
+
+**Na desnoj strani programa postoji konzolni prikaz napredovanja treniranja kao i izlaz svih funkcija koje će se kasnije koristiti.** U outputu koji sledi je prikazan proces treniranja na osnovu dataseta koji prolazi kroz dve faze - **Bottlneck** i **Training**.
+
+Na kraju se odvaja 10% dataseta za validaciju i mogu se videti na izlazu rezultati poredjenja.
+
+`Image: 2615.jpg | Actual Value: mountain | Predicted Value: mountain` na primer predstavlja tačnu predikciju.
+
+```
+Loading and shuffling dataset..
+Splitting dataset to train/vaild subsets..
+
+Beginning to train the model..
+Saver not created because there are no variables in the graph to restore
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index:   1
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index:   2
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index:   3
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index:   4
+
+…
+
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index: 764
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index: 765
+Phase: Bottleneck Computation, Dataset used: Validation, Image Index: 766
+
+...
+
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index:   6
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index:   7
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index:   8
+
+…
+
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index: 1949
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index: 1950
+Phase: Bottleneck Computation, Dataset used:      Train, Image Index: 1951
+
+...
+
+Epoch:  34, Accuracy: 0.91282076, Cross-Entropy: 0.28586656
+Phase: Training, Dataset used: Validation, Batch Processed Count:  78, Epoch:  35, Accuracy: 0.91282076, Cross-Entropy: 0.28623667
+Phase: Training, Dataset used: Validation, Batch Processed Count:  78, Epoch:  36, Accuracy: 0.91282076, Cross-Entropy: 0.28626505
+Phase: Training, Dataset used: Validation, Batch Processed Count:  78, Epoch:  37, Accuracy: 0.91282076, Cross-Entropy: 0.28660822
+Saver not created because there are no variables in the graph to restore
+Restoring parameters from C:\Users\Dusan\Desktop\MLNet\classification/workspace\custom_retrained_model_based_on_resnet_v2_101_299.meta
+Froze 2 variables.
+Converted 2 variables to const ops.
+
+Classifying multiple images..
+Image: 2831.jpg | Actual Value: forest | Predicted Value: forest
+Image: 1964.jpg | Actual Value: buildings | Predicted Value: buildings
+Image: 2496.jpg | Actual Value: forest | Predicted Value: forest
+Image: 1947.jpg | Actual Value: glacier | Predicted Value: glacier
+Image: 1432.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 2702.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 2615.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 3057.jpg | Actual Value: forest | Predicted Value: forest
+Image: 329.jpg | Actual Value: glacier | Predicted Value: mountain
+Image: 2468.jpg | Actual Value: forest | Predicted Value: forest
+
+End of Image-clasification..
+
+```
+
+![alt text][screenshot_02]
+
+[screenshot_02]: screenshots/screenshot_02.png
+
+![alt text][screenshot_01]
+
+[screenshot_01]: screenshots/screenshot_01.png
+
+![alt text][screenshot_03]
+
+[screenshot_03]: screenshots/screenshot_03.png
+
+![alt text][screenshot_04]
+
+[screenshot_04]: screenshots/screenshot_04.png

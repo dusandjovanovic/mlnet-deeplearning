@@ -291,6 +291,24 @@ Neki od načina poboljšanja modela:
 * Korišćenje smislenih podataka
 * Cross-validacija (podela dataseta i primena različitih algoritama nad grupama podataka) ili pak izbor drugog algoritma
 
+# Prototip projekat
+
+![alt text][screenshot_01]
+
+[screenshot_01]: screenshots/screenshot_01.png
+
+![alt text][screenshot_02]
+
+[screenshot_02]: screenshots/screenshot_02.png
+
+![alt text][screenshot_03]
+
+[screenshot_03]: screenshots/screenshot_03.png
+
+![alt text][screenshot_04]
+
+[screenshot_04]: screenshots/screenshot_04.png
+
 # Implementacija - Transfer learning i klasifikacija slika
 
 Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna.

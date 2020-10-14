@@ -673,7 +673,7 @@ Još jedan primer klasifikacije slike - u ovom slučaju druge klase.
 
 [screenshot_03]: screenshots/screenshot_03.png
 
-Ovo je primer detekcije objekata, detektovani objekti se beleže u konzoli - a rezultat sa vrednostima sigurnosti se može videti u konzoli.
+Ovo je primer detekcije objekata, detektovani objekti se beleže u konzoli - a rezultat sa vrednostima sigurnosti može se takodje videti pored predvidjenih klasa. Takodje, može se videti da su na slici svi automobili uokvireni pravouganicima (slika je jako mala pa je potrebno zumirati).
 
 ![alt text][screenshot_04]
 

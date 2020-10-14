@@ -1,3 +1,11 @@
+## Sadržaj
+
+#### 1. ML.NET
+#### 2. Implementacija - Transfer learning i klasifikacija slika
+#### 3. Implementacija - Detekcija objekata
+#### 4. Implementacija - Arhitektura
+#### 5. Prototip projekat - demo, objašnjenja i `screenshot-ovi`
+
 # ML.NET
 
 ### Duboko učenje

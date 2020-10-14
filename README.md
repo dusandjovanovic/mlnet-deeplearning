@@ -1,12 +1,13 @@
 ## Sadržaj
 
 #### 1. ML.NET
-#### 2. Implementacija - Transfer learning i klasifikacija slika
-#### 3. Implementacija - Detekcija objekata
-#### 4. Implementacija - Arhitektura
-#### 5. Prototip projekat - demo, objašnjenja i `screenshot-ovi`
+#### 2. Zadaci mašinskog učenja u ML.NET-u
+#### 3. Implementacija - Transfer learning i klasifikacija slika
+#### 4. Implementacija - Detekcija objekata
+#### 5. Implementacija - Arhitektura
+#### 6. Prototip projekat - demo, objašnjenja i `screenshot-ovi`
 
-# ML.NET
+# 1. ML.NET
 
 ### Duboko učenje
 
@@ -209,7 +210,7 @@ var pipeline = mlContext.Transforms.Concatenate("Features", new[] { "Xyz" })
 
 Svi algoritmi takodje formiraju nove kolone nakon što završe sa obradom podataka u svom mestu pipeline-a i daju predikciju. U slučaju regresije, na primer, to će biti kolona *score*. Bitna stavka `DataView` objekata je što se izvršavaju "lenje" - oni se učitavaju i evaluiraju jedino u procesu treniranja i evaluacije, kao i predikcije.
 
-## Zadaci mašinskog učenja u ML.NET-u
+# 2. Zadaci mašinskog učenja u ML.NET-u
 
 Zadatak u ML.NET-u je **tip predikcije ili zaključivanja**, koji se zasniva na problemu ili nekom pitanju i podacima. Na primer, zadatak klasifikacije dodeljuje kategoriju dostupnim ulaznim podacima. Ovi zadaci se oslanjaju na šablone u podacima i nisu eksplicitno programirani unapred.
 
@@ -299,7 +300,7 @@ Neki od načina poboljšanja modela:
 * Korišćenje smislenih podataka
 * Cross-validacija (podela dataseta i primena različitih algoritama nad grupama podataka) ili pak izbor drugog algoritma
 
-# Implementacija - Transfer learning i klasifikacija slika
+# 3. Implementacija - Transfer learning i klasifikacija slika
 
 Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna.
 
@@ -415,7 +416,7 @@ ModelInput image = mlContext.Data.CreateEnumerable<ModelInput>(data, reuseRowObj
 ModelOutput prediction = predictionEngine.Predict(image);
 ```
 
-# Implementacija - Detekcija objekata
+# 4. Implementacija - Detekcija objekata
 
 Detekcija objekata primenjuje klasifikaciju slika na granularniji način tako što locira a zatim i kategoriše entitete (objekte) na slikama. Detekcija objekata je problem koji se rešava CNN mrežama. Model koji se koristio u ovu svru je **Tiny YOLOv2 model**. Ovaj model je treniran i sastoji se od 15 slojeva koji mogu da predvide 20 različitih klasa objekata. Strukture podataka koje opisuju ulaze/izlaze ovog modela nazivaju se *tenzori*. Mogu se posmatrati kao kontejneri koji čuvaju podatke u N-dimenzija. Ulazni sloj ovog modela zove se `image` i očekuje tenzor dimenzija `3 x 416 x 416` dok je izlazni sloj nazvan `grid` i generiše tenzor dimenzija `125 x 13 x 13`.
 
@@ -518,7 +519,7 @@ var boundingBoxes =
   .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 ```
 
-# Implementacija - Arhitektura
+# 5. Implementacija - Arhitektura
 
 Kao "Front-End" za deomstraciju odabran je WPF projekat nad .NET-om. Kako se ML.NET može lako integrisati uokviru celog .NET/.NET Core okruženja princip za integraciju bio bi sličan u bilo kojoj drugoj Majkrosoftovoj tehnologiji iz ovog steka.
 
@@ -591,7 +592,7 @@ private void Initiate(object state)
 
 Nakon ovoga mogu se koristiti ostale metode klasa poput `.ClassifyExternalImage(Bitmap)` za klasifikaciju učitanih slika ili pak `.ProcessExternalImage(string)` za detekciju objekata. Obe metode pripadaju odvojenim instancama za klasifikaciju/detekciju respektivno.
 
-# Prototip projekat
+# 6. Prototip projekat
 
 Projekat demostrira dve funkcionalnosti čije su implementacije prethodno opisane:
 * **Klasifikaciju slika** u vidu prepoznavanja scene slike

@@ -5,7 +5,7 @@
 #### 3. Implementacija - Transfer learning i klasifikacija slika
 #### 4. Implementacija - Detekcija objekata
 #### 5. Implementacija - Arhitektura
-#### 6. Prototip projekat - demo, objašnjenja i `screenshot-ovi`
+#### 6. Prototip projekat - Demo, evaluacija, objašnjenja i `screenshot-ovi`
 
 # 1. ML.NET
 

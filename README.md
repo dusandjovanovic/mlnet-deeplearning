@@ -604,6 +604,8 @@ Prilikom pokretanja programa prvo je neophodno **trenirati model podacima** iz d
 
 Na kraju se odvaja mali deo dataseta za validaciju i mogu se videti rezultati poredjenja u izlaznoj konzoli na desnoj strani (ovaj deo dataseta se nije koristio u procesu treniranja).
 
+### Demo - klasifikacija
+
 `Image: 2615.jpg | Actual Value: mountain | Predicted Value: mountain` na primer predstavlja tačnu predikciju.
 
 ```
@@ -670,7 +672,7 @@ Nakon inicijalizacije modela on se može i koristiti. Pored klasifikacije postoj
 
 [screenshot_02]: screenshots/screenshot_02.png
 
-Ovo je bio primer uspešne klasifikacije učitane slike - ovo je slika van dataseta koju model prvi put sada prepoznaje. Može se videti rezultat klasifikacije kao scene **sea**.
+Ovo je bio primer uspešne klasifikacije učitane slike - **ovo je slika van dataseta** koju model prvi put sada prepoznaje. Može se videti rezultat klasifikacije u vidu prepoznate klase slike `sea` koja nagoveštava scenu mora na slici.
 
 ![alt text][screenshot_01]
 
@@ -678,14 +680,50 @@ Ovo je bio primer uspešne klasifikacije učitane slike - ovo je slika van datas
 
 Još jedan primer klasifikacije slike - u ovom slučaju druge klase.
 
+### Demo - evaluacija klasifikacije
+
+Izborom opcije iz menija `File -> Evaluate classification` pokreće se proces evaluacije modela. Iz dataseta se tada vade podaci smešteni u direktorijum `seg_test` i koriste se za evaluaciju. Ovo su slike koje **se ne nalaze u delu dataseta koji se koristio za treniranje** tako da se model sa njima susreće po prvi put.
+
+Izlaz u konzoli je procenat uspešnosti prepoznavanja klasa od strane modela.
+
+![alt text][screenshot_06]
+
+[screenshot_06]: screenshots/screenshot_06.png
+
+```
+Image: 24294.jpg | Actual Value: mountain | Predicted Value: glacier
+Image: 24319.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 24321.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 24328.jpg | Actual Value: mountain | Predicted Value: mountain
+Image: 24329.jpg | Actual Value: mountain | Predicted Value: mountain
+Evaluation success percentage is 85.14285714285714
+End of evaluation..
+```
+
+Kao što se moše videti - na primeru slika klase `mountain` uspešnost je oko 85 procenata.
+
+```
+Image: 24297.jpg | Actual Value: glacier | Predicted Value: glacier
+Image: 24299.jpg | Actual Value: glacier | Predicted Value: glacier
+Image: 24310.jpg | Actual Value: glacier | Predicted Value: glacier
+Image: 24323.jpg | Actual Value: glacier | Predicted Value: mountain
+Image: 24334.jpg | Actual Value: glacier | Predicted Value: glacier
+Evaluation success percentage is 79.92766726943941
+End of evaluation..
+```
+
+Na primeru slika klase `glacier` uspešnost je nešto niža ali ponovo prihvatljiva.
+
+### Demo - detekcija objekata
+
 ![alt text][screenshot_03]
 
 [screenshot_03]: screenshots/screenshot_03.png
 
-Ovo je primer detekcije objekata, detektovani objekti se beleže u konzoli - a rezultat sa vrednostima sigurnosti može se takodje videti pored predvidjenih klasa. Takodje, može se videti da su na slici svi automobili uokvireni pravouganicima (slika je jako mala pa je potrebno zumirati).
+Ovo je primer detekcije objekata, **detektovani objekti se beleže u konzoli** - a rezultat sa vrednostima sigurnosti može se takodje videti pored predvidjenih klasa. U konzoli su dakle ispisani detektovani objekti **klase `car` i isti su okvireni na slici**. Može se videti da su na slici svi automobili uokvireni ljubičastim pravouganicima (slika je jako mala pa je potrebno zumirati). Konkretna boja pravouganika odgovara istoj klasi objekata.
 
 ![alt text][screenshot_04]
 
 [screenshot_04]: screenshots/screenshot_04.png
 
-Još jedan malo očigledniji primer detekcije objekata.
+Još jedan malo očigledniji primer detekcije objekata gde su detektovana dva objekta - klasa `person` i `dog`.

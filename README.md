@@ -405,6 +405,8 @@ ITransformer trainedModel = trainingPipeline.Fit(trainSet);
 
 Metode `ClassifySingleImage` i `ClassifyExternalImage` se zatim koriste za klasifikaciju nad kontekstom izgradjenog modela. Prva metoda se koristi interno nakon treniranja i zove se za deo dataseta a druga se koristi na zahtev kada se sa Front-End-a aplikacije šalje slika na klasifikaciju.
 
+Na kraju, metoda `ProcessTestInBatch` koristi se za evaluaciju modela klasifikacije tako što će preuzeti deo dataseta za testiranje (slike koje se ne koriste u procesu treniranja). Ova metoda će preporznati klase ovih slika i kao rezultat u konzoli dati prepoznate klase kao i procenat uspešnosti modela u tom procesu.
+
 ### Korišćenje modela - klasifikacija
 
 Potrebno je koristiti convenience API nazvan *Prediction Engine* koji dozvoljava izvršenje predikcije nad jednom instancom podataka, potrebno je pre toga svesti `IDataView` na odgovarajući model objekat. Svaka predikcija se ispisuje u konzoli.

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dusan\\Desktop\\MLNet\\MLNet.csproj": {}
+    "C:\\Users\\Dusan\\Documents\\Repositories\\mlnet-deeplearning\\MLNet\\MLNet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dusan\\Desktop\\MLNet\\MLNet.csproj": {
+    "C:\\Users\\Dusan\\Documents\\Repositories\\mlnet-deeplearning\\MLNet\\MLNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dusan\\Desktop\\MLNet\\MLNet.csproj",
+        "projectUniqueName": "C:\\Users\\Dusan\\Documents\\Repositories\\mlnet-deeplearning\\MLNet\\MLNet.csproj",
         "projectName": "MLNet",
-        "projectPath": "C:\\Users\\Dusan\\Desktop\\MLNet\\MLNet.csproj",
+        "projectPath": "C:\\Users\\Dusan\\Documents\\Repositories\\mlnet-deeplearning\\MLNet\\MLNet.csproj",
         "packagesPath": "C:\\Users\\Dusan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dusan\\Desktop\\MLNet\\obj\\",
+        "outputPath": "C:\\Users\\Dusan\\Documents\\Repositories\\mlnet-deeplearning\\MLNet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -88,7 +88,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

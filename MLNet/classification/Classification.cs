@@ -119,6 +119,57 @@ namespace MLNet.classification
             Console.Out.Flush();
         }
 
+        public void ProcessTestInBatch()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Evaluating Image-classification..");
+            Console.Out.Flush();
+            /**
+             *  Putanje do dataseta, lokacija na koju se smestaju bottleneck vrednosti i .pb modela
+             */
+            var projectDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
+            var workspaceRelativePath = Path.Combine(projectDirectory, "classification/workspace");
+            var assetsRelativePath = Path.Combine(projectDirectory, "dataset/seg_test/seg_test");
+
+            IEnumerable<ImageData> images = LoadImagesFromDirectory(folder: assetsRelativePath, useFolderNameAsLabel: true);
+
+            IDataView imageData = mlContext.Data.LoadFromEnumerable(images);
+            var preprocessingPipeline = mlContext.Transforms.Conversion.MapValueToKey(
+                    inputColumnName: "Label",
+                    outputColumnName: "LabelAsKey")
+                .Append(mlContext.Transforms.LoadRawImageBytes(
+                    outputColumnName: "Image",
+                    imageFolder: assetsRelativePath,
+                    inputColumnName: "ImagePath"));
+            IDataView preProcessedData = preprocessingPipeline
+                                .Fit(imageData)
+                                .Transform(imageData);
+
+            IDataView predictionData = trainedModel.Transform(preProcessedData);
+
+            IEnumerable<ModelOutput> predictions = mlContext.Data.CreateEnumerable<ModelOutput>(predictionData, reuseRowObject: true);
+
+            double numTested = 0;
+            double numPassed = 0;
+
+            foreach (var prediction in predictions)
+            {
+                OutputPrediction(prediction);
+                Console.Out.Flush();
+                if (prediction.PredictedLabel.Equals(prediction.Label))
+                {
+                    numPassed++;
+                }
+                numTested++;
+            }
+
+            double perc = (numPassed / numTested) * 100;
+
+            Console.WriteLine($"Evaluation success percentage is {perc}");
+            Console.WriteLine("End of evaluation..");
+            Console.Out.Flush();
+        }
+
         /**
          * ClassifySingleImage se koristi za klasifikaciju jedne slike
          */
@@ -177,6 +228,7 @@ namespace MLNet.classification
             foreach (var prediction in predictions)
             {
                 OutputPrediction(prediction);
+                Console.Out.Flush();
             }
         }
 

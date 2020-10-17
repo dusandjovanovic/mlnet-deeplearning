@@ -92,5 +92,10 @@ namespace MLNet
         {
             ImageViewer.Source = detection.ProcessExternalImage(selectedImagePath);
         }
+
+        private void EvaluateClassification_Click(object sender, RoutedEventArgs e)
+        {
+            classification.ProcessTestInBatch();
+        }
     }
 }

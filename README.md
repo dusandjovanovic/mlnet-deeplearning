@@ -678,17 +678,17 @@ Ovo je bio primer uspešne klasifikacije učitane slike - **ovo je slika van dat
 
 [screenshot_01]: screenshots/screenshot_01.png
 
-Još jedan primer klasifikacije slike - u ovom slučaju druge klase.
+Još jedan primer klasifikacije slike - u ovom slučaju druge klase, odnosno `forest`.
 
 ### Demo - evaluacija klasifikacije
 
 Izborom opcije iz menija `File -> Evaluate classification` pokreće se proces evaluacije modela. Iz dataseta se tada vade podaci smešteni u direktorijum `seg_test` i koriste se za evaluaciju. Ovo su slike koje **se ne nalaze u delu dataseta koji se koristio za treniranje** tako da se model sa njima susreće po prvi put.
 
-Izlaz u konzoli je procenat uspešnosti prepoznavanja klasa od strane modela.
+Izlaz u konzoli je **procenat uspešnosti prepoznavanja klasa od strane modela.**
 
-![alt text][screenshot_06]
+![alt text][screenshot_05]
 
-[screenshot_06]: screenshots/screenshot_06.png
+[screenshot_05]: screenshots/screenshot_05.png
 
 ```
 Image: 24294.jpg | Actual Value: mountain | Predicted Value: glacier

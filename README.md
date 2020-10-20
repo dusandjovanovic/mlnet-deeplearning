@@ -335,7 +335,9 @@ Korišćeni dataset za treniranje zove se _Intel Image Classification - Image Sc
 + Dataset se može skinuti sa linka i raspakovati u /dataset/ folder uokviru projekta.
 ```
 
-Treniranje **deep learning modela** za klasifikaciju slika u one koje sadrže pukotine i one koje ih nemaju. Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
+**Formulacija problema** - Treniranje **deep learning modela** za klasifikaciju slika u zavisnosti od njihove scene a pritom ograničeno skupom scena (kategorija) dataset-a. 
+
+Koristi se tehnika *transfer learning* i kao osnova već trenirani *TensorFlow* model. Za evaluaciju koristi se slika i posmatra predvidjena klasa. Korišćen je *Image Classification API* koji daje pristup *TensorFlow C++ API-u*.
 
 Treniranje polazi od već treniranog modela koji se koristi i pravi se nadgradnja koja rešava problem pomenute kategorizacije. Treniranje ima dve faze - prva je nad *zaledjenim slojevima* postojećeg modela (svi slojevi do penultimate sloja) i ovde se vrednosti samo propuštaju. Šabloni ovih slojeva se bave računicom koje prave razliku izmedju osnovnih klasa slika. Druga faza je faza pravog treniranja gde se refinira poslednji sloj mreže - iterativna je i uzima u obzir gubitke preciznosti kako bi model bio što bolji. Polazni model (101-slojna varijanta Rezidualnog mrežnog (ResNet) v2 modela) kategorizuje sliku u više hiljada kateogirja i za ulaznu sliku veličine 224 x 224px daje verovatnoće pripadanja svakoj kategoriji. Deo ovog modela se koristi za treniranje novog modela kako bi davao predikcije izmedju novih klasa.
 

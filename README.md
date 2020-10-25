@@ -9,10 +9,6 @@
 
 # 1. ML.NET
 
-### Duboko učenje
-
-**Duboko učenje** je podskup mašinskog učenja. Da bi se trenirali modeli dubokog učenja potrebne su velike količine podataka. Šabloni u podacima se predstavljaju velikim brojem slojeva. Odnosi izmedju podataka se kodiraju u vidu veza izmedju čvorova slojeva različitih težina. Što je jača veza jača je i težina. Kolektivno ovi entiteti i slojevi čine veštačke neuronske mreže - što više ima ovakvih slojeva mreža je dublja i odatle naziv *duboko učenje*.
-
 **ML.NET** je kros-platformski *framework* za mašinsko učenje namenjen da bude korišćen u **.NET** okruženju. Neke od osnovnih mogućnosti su integracija modela mašinskog učenja u postojeće .NET sisteme, kros-platformski CLI i slično.
 
 Ovaj framework proširava .NET sisteme mogućnostima mašinskog učenja, bez obzira da li se radi o online ili offline scenarijima. Na osnovu ovoga, mogu se praviti automatizovane predikcije na osnovnu podataka koji su dostupni aplikaciji. Aplikacije mašinskog učenja koriste šablone podataka kako bi pravile **predikcije** - nasuprot tome da budu programiranje unapred.
@@ -301,6 +297,10 @@ Neki od načina poboljšanja modela:
 * Cross-validacija (podela dataseta i primena različitih algoritama nad grupama podataka) ili pak izbor drugog algoritma
 
 # 3. Implementacija - Transfer learning i klasifikacija slika
+
+### Duboko učenje
+
+**Duboko učenje** je podskup mašinskog učenja. Da bi se trenirali modeli dubokog učenja potrebne su velike količine podataka. Šabloni u podacima se predstavljaju velikim brojem slojeva. Odnosi izmedju podataka se kodiraju u vidu veza izmedju čvorova slojeva različitih težina. Što je jača veza jača je i težina. Kolektivno ovi entiteti i slojevi čine veštačke neuronske mreže - što više ima ovakvih slojeva mreža je dublja i odatle naziv *duboko učenje*.
 
 Ima više tipova neuronskih mreža a najčešće su *Multi-Layered Perceptron (MLP)*, *Convolutional Neural Network (CNN)* i *Recurrent Neural Network (RNN)*. MLP je naprostiji vid neuronske mreže koji mapira niz ulaza na niz izlaza - dobar je izbor kada podaci nemaju prostornu ili vremensku komponentu. CNN iskorišćava *convutational* slojeve za procesiranje prostornih informacija. Dobar izbor predstavljaju u slučaju obrade slika - pogotovo prepoznavanja regije unutar slike. RNN mreže, na kraju, dozvoljavaju perzistenicju stanja ili memorije koja će se koristiti kao ulazna. Koriste se u slučaju analiza vremenskih serija podataka ukoliko je sekvencna uredjenost važna.
 
